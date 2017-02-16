@@ -130,8 +130,8 @@ error = build.$(Cluster).$(Process).err
 transfer_output_files = %s.tar.gz
 should_transfer_files = yes
 when_to_transfer_output = on_exit
-request_memory = 1GB   # should be an option
-request_disk = 5GB   # should be an option
+request_memory = 1GB
+request_disk = 5GB
 queue
 """ %(SCRIPT_FILENAME, build_dir))
 
