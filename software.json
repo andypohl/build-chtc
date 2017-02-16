@@ -115,6 +115,7 @@
         "Next_Version": null,
         "Release_Date": "2015-09-29",
         "URL": "http://tukaani.org/xz/xz-5.2.2.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/xz-5.2.2.tar.gz",
         "Build_Commands": [
             "tar xfz xz-5.2.2.tar.gz",
             "cd xz-5.2.2/",
