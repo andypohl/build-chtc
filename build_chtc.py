@@ -132,6 +132,7 @@ should_transfer_files = yes
 when_to_transfer_output = on_exit
 request_memory = 1GB   # should be an option
 request_disk = 5GB   # should be an option
+queue
 """ %(SCRIPT_FILENAME, build_dir))
 
 def make_script_file(software_name, software_version, build_dir):
