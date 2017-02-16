@@ -5,11 +5,12 @@
 Make a self-contained program tarball, particularly for CHTC's HTCondor pool.
 This will produce an HTCondor submit file and a corresponding script file.
 
-Usage: build_chtc.py <software> [-s <version_number>] [-d <dir>]
+Usage: build_chtc.py <software> [-s <version_number>] [-d <dir>] [-i]
        build_chtc.py -h | --help
 
 Options:
    -h, --help                     Show this message.
+   -i, --interactive              Make an interactive submit file in case build steps are bad somehow.
    -s <version_number>, --software-version <version_number>
                                   Specify a version for the software.
    --request-mem <memory>         [default: 1GB] (for the submit file).  (IN PROGRESS)
@@ -119,11 +120,15 @@ tar cfz %s.tar.gz %s
 rm -rf %s
 """ %(build_dir, build_dir, build_dir))
 
-def write_submit_file(submit_file, build_dir):
+def write_submit_file(submit_file, build_dir, is_interactive):
     """Make the submit file to accompany the script for HTCondor."""
+    if is_interactive:
+        variable_lines = "transfer_input_files = %s\n+IsBuildJob = true\nrequirements = (OpSysAndVer =?= \"SL6\") && (IsBuildSlot == true)" %(SCRIPT_FILENAME)
+    else:
+        variable_lines = "executable = " + SCRIPT_FILENAME
     submit_file.write("""\
 universe = vanilla
-executable = %s
+%s
 log = build.$(Cluster).$(Process).log
 output = build.$(Cluster).$(Process).out
 error = build.$(Cluster).$(Process).err
@@ -133,9 +138,9 @@ when_to_transfer_output = on_exit
 request_memory = 1GB
 request_disk = 5GB
 queue
-""" %(SCRIPT_FILENAME, build_dir))
+""" %(variable_lines, build_dir))
 
-def make_script_file(software_name, software_version, build_dir):
+def make_script_file(software_name, software_version, build_dir, is_interactive):
     """Make the build script.  Beginning and end are more/less hardcoded, while the
     middle comes from the software.json."""
     try:
@@ -148,7 +153,7 @@ def make_script_file(software_name, software_version, build_dir):
             write_script_end(script, build_dir)
         os.chmod(SCRIPT_FILENAME, 0755)
         with open(SUBMIT_FILENAME, "w") as submit_file:
-            write_submit_file(submit_file, build_dir)
+            write_submit_file(submit_file, build_dir, is_interactive)
     except LookupError as msg:
         print msg
         script.close()
@@ -162,7 +167,8 @@ def do_make_build(arguments):
     software_name = arguments['<software>']
     software_version = arguments['--software-version']
     build_dir = arguments['--build-dir']
-    make_script_file(software_name, software_version, build_dir)
+    is_interactive = arguments['--interactive']
+    make_script_file(software_name, software_version, build_dir, is_interactive)
     #pprint(arguments)
 
 if __name__ == '__main__':
