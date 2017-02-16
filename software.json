@@ -21,10 +21,10 @@
         "Build_Commands": [
             "tar xfz R-3.3.2.tar.gz",
             "cd R-3.3.2/",
-            "./configure CFLAGS=\"-I../../include\" LDFLAGS=\"-L../../lib\" --prefix=$BUILDDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "./configure CFLAGS=\"-I$BUILDDIR/include\" LDFLAGS=\"-L$BUILDDIR/lib\" --prefix=$BUILDDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
-            "base=$(basename $BUILDDIR) && sed -i 's/\/var\/lib\/condor.*'$base'\//${RDIR}\//' ../../bin/R ../../lib64/R/bin/R ../../lib64/R/etc/Makeconf",
+            "base=$(basename $BUILDDIR) && sed -i 's/\/var\/lib\/condor.*'$base'\//${RDIR}\//' $BUILDDIR/bin/R $BUILDDIR/lib64/R/bin/R $BUILDDIR/lib64/R/etc/Makeconf",
             "cd ../"
         ],
         "Dependent_Software": [
