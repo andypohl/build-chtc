@@ -163,7 +163,7 @@ def do_make_build(arguments):
     software_version = arguments['--software-version']
     build_dir = arguments['--build-dir']
     make_script_file(software_name, software_version, build_dir)
-    pprint(arguments)
+    #pprint(arguments)
 
 if __name__ == '__main__':
     ARGS = docopt(__doc__, version='build_r.py v0.1 -- 2017-02-17 (github.com/andypohl/building-r)')
