@@ -1,0 +1,191 @@
+[
+    {
+        "Software": "R-dplyr",
+        "Release_Date": "2017-02-16",
+        "Build_Commands": [
+            "../bin/Rscript -e \"install.packages('dplyr')\""
+        ],
+        "Dependent_Software": [
+            {"Software": "R", "Version": "3.3.2"}
+        ]
+    },
+    {
+        "Software": "R",
+        "Version": "3.3.2",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-10-26",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
+        "Comment": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Build_Commands": [
+            "tar xfz R-3.3.2.tar.gz",
+            "cd R-3.3.2/",
+            "./configure CFLAGS=\"-I../../include\" LDFLAGS=\"-L../../lib\" --prefix=../.. --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "make",
+            "make install",
+            "base=$(basename $BUILDDIR) && sed -i 's/\/var\/lib\/condor.*'$base'\//${RDIR}\//' ../../bin/R ../../lib64/R/bin/R ../../lib64/R/etc/Makeconf",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "curl", "Version": "7.50.3"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "pcre", "Version": "8.3.9"},
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "xz", "Version": "5.2.2"},
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "libpng", "Version": "1.6.26"},
+            {"Software": "libjpeg", "Version": "v9b"}
+        ]
+    },
+    {
+        "Software": "curl",
+        "Version": "7.50.3",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-09-14",
+        "URL": "http://curl.askapache.com/download/curl-7.50.3.tar.gz",
+        "Build_Commands": [
+            "tar xfz curl-7.50.3.tar.gz",
+            "cd curl-7.50.3/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]
+    },
+    {
+        "Software": "bzip",
+        "Version": "1.0.6",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2010-09-20",
+        "URL": "http://bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
+        "Build_Commands": [
+            "tar xfz bzip2-1.0.6.tar.gz",
+            "pushd bzip2-1.0.6/",
+            "sed -i 's/CFLAGS=/CFLAGS=-fPIC /' Makefile",
+            "make",
+            "make install PREFIX=../..",
+            "cd ../../bin/",
+            "rm -f bzcmp bzegrep bzfgrep bzless",
+            "ln -s bzdiff bzcmp",
+            "ln -s bzgrep bzegrep",
+            "ln -s bzgrep bzfgrep",
+            "ln -s bzless bzmore",
+            "popd"
+        ]
+    },
+    {
+        "Software": "pcre",
+        "Version": "8.3.9",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-06-14",
+        "URL": "http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.39.tar.gz",
+        "Build_Commands": [
+            "tar xfz pcre-8.39.tar.gz",
+            "cd pcre-8.39/",
+            "./configure --prefix=../.. --enable-utf8",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "pcre",
+        "Version": "8.3.9",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-06-14",
+        "URL": "http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.39.tar.gz",
+        "Build_Commands": [
+            "tar xfz pcre-8.39.tar.gz",
+            "cd pcre-8.39/",
+            "./configure --prefix=../.. --enable-utf8",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "readline",
+        "Version": "7.0",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-09-15",
+        "URL": "https://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz",
+        "Build_Commands": [
+            "tar xfz readline-7.0.tar.gz",
+            "cd readline-7.0/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "xz",
+        "Version": "5.2.2",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2015-09-29",
+        "URL": "http://tukaani.org/xz/xz-5.2.2.tar.gz",
+        "Build_Commands": [
+            "tar xfz xz-5.2.2.tar.gz",
+            "cd xz-5.2.2/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "zlib",
+        "Version": "1.2.8",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2015-09-29",
+        "URL": "http://www.zlib.net/fossils/zlib-1.2.8.tar.gz",
+        "Build_Commands": [
+            "tar xfz zlib-1.2.8.tar.gz",
+            "cd zlib-1.2.8/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "libpng",
+        "Version": "1.6.26",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-10-20",
+        "URL": "ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng16/libpng-1.6.26.tar.gz",
+        "Build_Commands": [
+            "tar xfz libpng-1.6.26.tar.gz",
+            "cd libpng-1.6.26/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "libjpeg",
+        "Version": "v9b",
+        "Previous_Version": null,
+        "Next_Version": null,
+        "Release_Date": "2016-01-17",
+        "URL": "http://www.ijg.org/files/jpegsrc.v9b.tar.gz",
+        "Build_Commands": [
+            "tar xfz jpegsrc.v9b.tar.gz",
+            "cd jpeg-9b/",
+            "./configure --prefix=../..",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    }
+]
