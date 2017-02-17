@@ -5,28 +5,20 @@
 Make a self-contained program tarball, particularly for CHTC's HTCondor pool.
 This will produce an HTCondor submit file and a corresponding script file.
 
-Usage: build_chtc.py <software> [-s <version_number>] [-d <dir>] [-i]
+Usage: build_chtc.py <software> [-s <version_number>] [-i]
        build_chtc.py -h | --help
 
 Options:
    -h, --help                     Show this message.
-   -i, --interactive              Make an interactive submit file in case build steps are bad somehow.
+   -i, --interactive              Make an interactive submit file.
    -s <version_number>, --software-version <version_number>
                                   Specify a version for the software.
-   --request-mem <memory>         [default: 1GB] (for the submit file).  (IN PROGRESS)
-   --request-disk <disk>          [default: 3GB] (for the submit file).  (IN PROGRESS)
-   -d <dir>, --build-dir <dir>    [default: chtc] The base subdirectory
-                                  where the software is installed.
 """
 
 import os
 import json
-from pprint import pprint
-from datetime import datetime
+#from pprint import pprint   # don't need this unless playing with docopt
 from docopt import docopt
-
-SCRIPT_FILENAME = "build.sh"
-SUBMIT_FILENAME = "build.submit"
 
 def load_software_db(db_file='software.json'):
     """Load what is by default software.json and return the dict."""
@@ -34,24 +26,13 @@ def load_software_db(db_file='software.json'):
         data = json.load(json_data)
     return data
 
-def generation_info(for_script):
-    """Return some information about the script/submit file being made for provenance sake."""
-    info = " generated " + datetime.now().strftime("%Y-%d-%m at %H:%M")
-    if for_script:
-        return SCRIPT_FILENAME + " script" + info
-    else:
-        return SUBMIT_FILENAME + " submit file" + info
-
-def write_script_beginning(script, software_name, software_version, build_dir):
+def write_script_beginning(script):
     """The beginning of the script.  Set up some environment variables and directories, etc."""
     script.write("""\
 #!/bin/bash
 
-# %s
-# for software = %s, version = %s, build_dir = %s
-
 # Set up environment:
-BUILDDIR=$_CONDOR_SCRATCH_DIR/%s
+BUILDDIR=$_CONDOR_SCRATCH_DIR/chtc
 export LD_LIBRARY_PATH=$BUILDDIR/lib
 export PATH=$BUILDDIR/bin:$PATH
 
@@ -61,8 +42,7 @@ mkdir -p $BUILDDIR/src
 # cd into this directory to stage installs:
 cd $BUILDDIR/src
 
-""" %(generation_info(for_script=True), software_name, software_version, build_dir, build_dir))
-
+""")
 
 def find_software(soft_db, software_name, software_version):
     """Not the most efficient thing to loop through the JSON array every time, but it
@@ -109,7 +89,7 @@ def write_script_middle(script, software_name, software_version):
     soft_db = load_software_db()
     write_software_recursive(script, soft_db, software_name, software_version)
 
-def write_script_end(script, build_dir):
+def write_script_end(script, tarball_prefix):
     """Write the end part of the script."""
     script.write("""\
 
@@ -119,16 +99,18 @@ rm -rf src/
 
 # tar it up
 cd ../
-tar cfz %s.tar.gz %s
-rm -rf %s
-""" %(build_dir, build_dir, build_dir))
+tar cfz %s.tar.gz chtc
+rm -rf chtc/
+""" %(tarball_prefix))
 
-def write_submit_file(submit_file, build_dir, is_interactive):
+def write_submit_file(submit_file, software_name, software_version, is_interactive):
     """Make the submit file to accompany the script for HTCondor."""
+    tarball_prefix = software_name + "-" + software_version
+    script_filename = tarball_prefix + ".sh"
     if is_interactive:
-        variable_lines = "transfer_input_files = %s\n+IsBuildJob = true\nrequirements = (OpSysAndVer =?= \"SL6\") && (IsBuildSlot == true)" %(SCRIPT_FILENAME)
+        variable_lines = "transfer_input_files = %s\n+IsBuildJob = true\nrequirements = (OpSysAndVer =?= \"SL6\") && (IsBuildSlot == true)" %(script_filename)
     else:
-        variable_lines = "executable = " + SCRIPT_FILENAME
+        variable_lines = "executable = " + script_filename
     submit_file.write("""\
 universe = vanilla
 %s
@@ -141,40 +123,43 @@ when_to_transfer_output = on_exit
 request_memory = 1GB
 request_disk = 5GB
 queue
-""" %(variable_lines, build_dir))
+""" %(variable_lines, tarball_prefix))
 
-def make_script_file(software_name, software_version, build_dir, is_interactive):
+def make_both_files(software_name, software_version, is_interactive):
     """Make the build script.  Beginning and end are more/less hardcoded, while the
     middle comes from the software.json."""
     try:
         # Must deal with situation where version isn't specified:
         if software_version is None:
             software_version = get_default_version(software_name)
-        with open(SCRIPT_FILENAME, "w") as script:
-            write_script_beginning(script, software_name, software_version, build_dir)
+        tarball_prefix = software_name + "-" + software_version
+        script_filename = tarball_prefix + ".sh"
+        submit_filename = tarball_prefix + ".submit"
+        with open(script_filename, "w") as script:
+            write_script_beginning(script)
             write_script_middle(script, software_name, software_version)
-            write_script_end(script, build_dir)
-        os.chmod(SCRIPT_FILENAME, 0755)
-        with open(SUBMIT_FILENAME, "w") as submit_file:
-            write_submit_file(submit_file, build_dir, is_interactive)
+            write_script_end(script, tarball_prefix)
+        os.chmod(script_filename, 0755)
+        with open(submit_filename, "w") as submit_file:
+            write_submit_file(submit_file, software_name, software_version, is_interactive)
     except LookupError as msg:
         print msg
         try:
             script.close()
-            script.close()
+            submit_file.close()
         except UnboundLocalError:
+            # arises when those files weren't able to be closed because they weren't used
             pass
-        os.remove(SCRIPT_FILENAME)
-        os.remove(SUBMIT_FILENAME)
+        os.remove(script_filename)
+        os.remove(submit_filename)
 
 def do_make_build(arguments):
     """The 'real' main().  Do the main option logic here, if there is any.
     Make the script, then the submit file.  Returns nothing."""
     software_name = arguments['<software>']
     software_version = arguments['--software-version']
-    build_dir = arguments['--build-dir']
     is_interactive = arguments['--interactive']
-    make_script_file(software_name, software_version, build_dir, is_interactive)
+    make_both_files(software_name, software_version, is_interactive)
     #pprint(arguments)
 
 if __name__ == '__main__':
