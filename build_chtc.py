@@ -158,8 +158,9 @@ def make_script_file(software_name, software_version, build_dir, is_interactive)
             write_submit_file(submit_file, build_dir, is_interactive)
     except LookupError as msg:
         print msg
-        script.close()
-        submit_file.close()
+        if software_version is not None:
+            script.close()
+            submit_file.close()
         os.remove(SCRIPT_FILENAME)
         os.remove(SUBMIT_FILENAME)
 
