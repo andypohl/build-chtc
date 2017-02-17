@@ -1,12 +1,18 @@
 [
     {
-        "Software": "R-dplyr",
-        "Release_Date": "2017-02-16",
-        "Build_Commands": [
-            "../bin/Rscript -e \"install.packages('dplyr')\""
-        ],
+        "Software": "Rlibs",
+        "Version": "3.3.2",
+        "URL": null,
+        "URL_local": null,
         "Dependent_Software": [
-            {"Software": "R", "Version": "3.3.2"}
+            {"Software": "curl", "Version": "7.50.3"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "pcre", "Version": "8.3.9"},
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "xz", "Version": "5.2.2"},
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "libpng", "Version": "1.6.26"},
+            {"Software": "libjpeg", "Version": "v9b"}
         ]
     },
     {

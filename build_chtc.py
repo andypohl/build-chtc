@@ -95,7 +95,9 @@ def write_software_recursive(script, soft_db, software_name, software_version):
     download_url = software_entry['URL']
     if 'URL_local' in software_entry.keys():
         download_url = software_entry['URL_local']
-    script.write("curl -O " + download_url + '\n')
+    # sometimes there is no download e.g. Rlibs
+    if download_url is not None:
+        script.write("curl -O " + download_url + '\n')
     for command in software_entry['Build_Commands']:
         script.write(command + '\n')
     if 'Comment' in software_entry.keys():
