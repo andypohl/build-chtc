@@ -98,8 +98,9 @@ def write_software_recursive(script, soft_db, software_name, software_version):
     # sometimes there is no download e.g. Rlibs
     if download_url is not None:
         script.write("curl -O " + download_url + '\n')
-    for command in software_entry['Build_Commands']:
-        script.write(command + '\n')
+    if 'Build_Commands' in software_entry.keys():
+        for command in software_entry['Build_Commands']:
+            script.write(command + '\n')
     if 'Comment' in software_entry.keys():
         print software_entry['Comment']
 
@@ -158,9 +159,11 @@ def make_script_file(software_name, software_version, build_dir, is_interactive)
             write_submit_file(submit_file, build_dir, is_interactive)
     except LookupError as msg:
         print msg
-        if software_version is not None:
+        try:
             script.close()
-            submit_file.close()
+            script.close()
+        except UnboundLocalError:
+            pass
         os.remove(SCRIPT_FILENAME)
         os.remove(SUBMIT_FILENAME)
 
