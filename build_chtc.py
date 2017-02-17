@@ -7,8 +7,11 @@ This will produce an HTCondor submit file and a corresponding script file.
 
 Usage: build_chtc.py <software> [-s <version_number>] [-i]
        build_chtc.py -h | --help
+       build_chtc.py -l | --list-software
 
 Options:
+   -l, --list-software            Show a list of software names and versions input
+                                  the default JSON file.
    -h, --help                     Show this message.
    -i, --interactive              Make an interactive submit file.
    -s <version_number>, --software-version <version_number>
@@ -153,13 +156,29 @@ def make_both_files(software_name, software_version, is_interactive):
         os.remove(script_filename)
         os.remove(submit_filename)
 
+def list_software():
+    """Print list of software to screen."""
+    json_data = load_software_db()
+    col1_format = '{0:<24}'
+    header = ['Software (Version)', 'Depends on']
+    print col1_format.format(header[0]) + header[1]
+    for entry in json_data:
+        if 'Dependent_Software' in entry.keys():
+            deps = [s['Software']+' ('+s['Version']+')' for s in entry['Dependent_Software']]
+            deps = 'N/A' if len(deps) == 0 else ', '.join(deps)
+        else:
+            deps = 'N/A'
+        print col1_format.format(entry['Software'] + ' (' + entry['Version'] + ')') + deps
+
 def do_make_build(arguments):
-    """The 'real' main().  Do the main option logic here, if there is any.
-    Make the script, then the submit file.  Returns nothing."""
+    """The 'real' main(). Option logic here."""
     software_name = arguments['<software>']
     software_version = arguments['--software-version']
     is_interactive = arguments['--interactive']
-    make_both_files(software_name, software_version, is_interactive)
+    if arguments['--list-software']:
+        list_software()
+    else:
+        make_both_files(software_name, software_version, is_interactive)
     #pprint(arguments)
 
 if __name__ == '__main__':
