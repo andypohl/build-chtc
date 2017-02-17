@@ -5,7 +5,7 @@
 Make a self-contained program tarball, particularly for CHTC's HTCondor pool.
 This will produce an HTCondor submit file and a corresponding script file.
 
-Usage: build_chtc.py <software> [-s <version_number>] [-i]
+Usage: build_chtc.py <software> [-s <version_number>] [-i] [--json <file> --json <file>]
        build_chtc.py -h | --help
        build_chtc.py -l | --list-software
 
@@ -14,13 +14,17 @@ Options:
                                   the default JSON file.
    -h, --help                     Show this message.
    -i, --interactive              Make an interactive submit file.
+   --json <file>                  [default: software.json] Specify JSON files to use as software
+                                  database.  If using this option to add a second JSON file to 
+                                  override entries in in the first, then order this option in the
+                                  command like "--json first.json --json second.json".  
    -s <version_number>, --software-version <version_number>
                                   Specify a version for the software.
 """
 
 import os
 import json
-#from pprint import pprint   # don't need this unless playing with docopt
+from pprint import pprint   # don't need this unless playing with docopt
 from docopt import docopt
 
 def load_software_db(db_file='software.json'):
@@ -171,15 +175,15 @@ def list_software():
         print col1_format.format(entry['Software'] + ' (' + entry['Version'] + ')') + deps
 
 def do_make_build(arguments):
-    """The 'real' main(). Option logic here."""
-    software_name = arguments['<software>']
-    software_version = arguments['--software-version']
-    is_interactive = arguments['--interactive']
-    if arguments['--list-software']:
-        list_software()
-    else:
-        make_both_files(software_name, software_version, is_interactive)
-    #pprint(arguments)
+    # """The 'real' main(). Option logic here."""
+    # software_name = arguments['<software>']
+    # software_version = arguments['--software-version']
+    # is_interactive = arguments['--interactive']
+    # if arguments['--list-software']:
+    #     list_software()
+    # else:
+    #     make_both_files(software_name, software_version, is_interactive)
+    pprint(arguments)
 
 if __name__ == '__main__':
     ARGS = docopt(__doc__, version='build_r.py v0.1 -- 2017-02-17 (github.com/andypohl/building-r)')
