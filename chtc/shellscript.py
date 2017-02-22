@@ -8,7 +8,7 @@ START_LINES = """\
 #!/bin/bash
 
 # Set up environment:
-BUILDDIR=$_CONDOR_SCRATCH_DIR/chtc
+BUILDDIR=$_CONDOR_SCRATCH_DIR/software
 export LD_LIBRARY_PATH=$BUILDDIR/lib
 export PATH=$BUILDDIR/bin:$PATH
 
@@ -27,7 +27,7 @@ rm -rf src/
 # tar it up
 cd ../
 tar cfz %s.tar.gz chtc
-rm -rf chtc/"""
+rm -rf software/"""
 
 class ShellScript(object):
     """Describes a shell script, which can be written to a file."""
