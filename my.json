@@ -1,10 +1,13 @@
 [
     {
         "Software": "R",
-        "Version": "3.3.2-with-dplyr",
+        "Version": "3.3.2-with-packages",
         "URL_extends": "http://proxy.chtc.wisc.edu/aapohl/sandboxes/R-3.3.2.tar.gz",
-        "Build_Commands": [
-            "### SETUP",
+        "Substitutions": ["RPACKS"],
+        "Example_Git_Repository": "https://github.com/andypohl/chtc-recipes.git",
+        "Example_Subdirectory": "chtc-recipes/R/build_chtc.py/basic",
+        "Build_Commands": ["",
+            "##### ENVIRONMENT CONFIGURATION",
             "",
             "export LD_LIBRARY_PATH=$BUILDDIR/lib:$BUILDDIR/lib64/R/lib",
             "# RDIR was substituted into R and Rscript executables already",
@@ -15,8 +18,8 @@
             "export RHOME=$R_HOME",
             "export R_ENVIRON=$R_HOME/etc/Renviron",
             "",
-            "# INSTALL BELOW", 
-            "Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
+            "##### PACKAGE INSTALLATION", 
+            "Rscript -e 'install.packages(c(\"{{RPACKS}}\"), repos=\"https://cran.rstudio.com/\")'"
         ]
     }
 ]

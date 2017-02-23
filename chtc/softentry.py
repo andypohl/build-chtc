@@ -76,25 +76,30 @@ class SoftEntry(object):
         path = re.sub(r'.*\/', '', path)
         return [u'tar xfz ' + path, u'cp -R software/* ../', u'rm -rf software/ ' + path]
 
+    # Get a list of strings on cid_key.  e.g. "Build_Commands" or "Substitutions"
+    def _get_string_list(self, json_cid, cid_key):
+        '''Throws TypeErrors'''
+        if not json_cid.has_key(cid_key):
+            return []
+        array = json_cid[cid_key]
+        if not isinstance(array, list):
+            raise TypeError("ERROR: Field \"%s\" for entry %s in file %s must be a list" %(cid_key, self.prefix, self.json_filename))
+        for item in array:
+            if not isinstance(item, unicode) and not isinstance(item, str):
+                raise TypeError("ERROR: Field \"%s\" for entry %s in file %s must be a list of strings." %(cid_key, self.prefix, self.json_filename))
+        return array
+
     # Build commands should be an array of strings.  Can't check much beyond that.
     def _get_build_commands(self, json_cid):
         '''Throws TypeErrors and returns nothing.'''
-        if not json_cid.has_key('build_commands'):
-            return []
-        array = json_cid['build_commands']
-        if not isinstance(array, list):
-            raise TypeError("ERROR: Field \"Build_Commands\" for entry %s in file %s must be a list" %(self.prefix, self.json_filename))
+        array = self._get_string_list(json_cid, 'Build_Commands')
         # add some lines to top
         top_commands = [u'# %s' %(self.prefix), u'wget %s' %(self.url)]
         if self.extending:
             top_commands.extend(self._extending_build_commands())
         array[:0] = top_commands
-        # add a blank commands
+        # add a blank command
         array.append(u'')
-        # array can be empty
-        for item in array:
-            if not isinstance(item, unicode) and not isinstance(item, str):
-                raise TypeError("ERROR: Field \"Build_Commands\" for entry %s in file %s must be a list of strings." %(self.prefix, self.json_filename))
         return array
 
     # More checking.
@@ -140,6 +145,7 @@ class SoftEntry(object):
         self._check_and_set_url(json_cid)
         # OPTIONAL fields: 'Build_Commands', 'Release_Date', 'Previous_Version', 'Next_Version', 'Dependent_Software' 
         self.build_commands = self._get_build_commands(json_cid)
+        self.required_substitutions = self._get_string_list(json_cid, 'Substitutions')
         self.release_date = self._check_release_date(json_cid)
         self.previous_version = self._get_string_field(json_cid, 'previous_version', False)
         self.next_version = self._get_string_field(json_cid, 'next_version', False)

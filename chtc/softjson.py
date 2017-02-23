@@ -20,6 +20,7 @@ class SoftJson(object):
                 self.defaults[soft_entry.software] = soft_entry.prefix
 
     def _build_commands_reversed(self, prefix):
+        '''Inner recursive function which needs reversing in an outer function.'''
         if not self.software.has_key(prefix):
             raise LookupError("Couldn't find software %s in the database")
         software = self.software[prefix]
@@ -32,6 +33,7 @@ class SoftJson(object):
         return commands_array
     
     def build_commands(self, prefix):
+        '''Build up the list of commands, recursively'''
         commands = self._build_commands_reversed(prefix)
         commands.reverse()
         return commands
@@ -48,6 +50,12 @@ class SoftJson(object):
             except KeyError:
                 raise LookupError("Couldn't find %s in software database" %(software_name))
         return prefix
+    
+    def required_substitutions(self, prefix):
+        '''Lookup a substitution list given a prefix'''
+        if not self.software.has_key(prefix):
+            raise LookupError("Couldn't find software %s in the database")
+        return self.software[prefix].required_substitutions
 
     def __init__(self, json_files=None):
         '''Initialize with or without files.'''
