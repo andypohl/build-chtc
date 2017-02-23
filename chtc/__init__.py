@@ -6,3 +6,5 @@ from chtc.softjson import tarball_prefix, load_software_db, find_all_software, l
 
 # class to make the shell script
 from chtc.shellscript import ShellScript
+
+from chtc.caseinsensitivedict import CaseInsensitiveDict
