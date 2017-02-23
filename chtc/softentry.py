@@ -141,23 +141,7 @@ class SoftEntry(object):
         self.next_version = self._get_string_field(json_cid, 'next_version', False)
         self.deps = self._check_deps(json_cid)
 
-    def is_local(self):
-        '''Is the URL a local one?'''
-        return self.is_local
-
-    def get_prefix(self):
-        '''The tarball prefix'''
-        return self.prefix
-
-    def get_url(self):
-        '''The URL for download.'''
-        return self.url
-
-    def get_release_date(self):
-        '''Returns datetime.date object or None'''
-        return self.release_date
-
-# Command-line testing (not in test suite)
+##### Command-line testing (not in test suite)
 def __run_tests():
     import json
     filename = "../software.json"
