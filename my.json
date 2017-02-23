@@ -4,7 +4,7 @@
         "Version": "3.3.2-with-dplyr",
         "URL_extends": "http://proxy.chtc.wisc.edu/aapohl/sandboxes/R-3.3.2.tar.gz",
         "Build_Commands": [
-            "../bin/Rscript -e 'install.packages(\"dplyr\")'"
+            "$BUILDDIR/bin/Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
         ]
         }
 ]
