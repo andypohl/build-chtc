@@ -6,9 +6,12 @@
         "Build_Commands": [
             "export PATH=$BUILDDIR/bin:$PATH",
             "export LD_LIBRARY_PATH=$BUILDDIR/lib:$BUILDDIR/lib64/R/lib",
-            "export R_HOME=$BUILDDIR/lib64/R",
+            "# RDIR was substituted into R and Rscript executables already",
+            "export RDIR=$BUILDDIR",
+            "# R_HOME is needed for R executable",
+            "export R_HOME=$RDIR/lib64/R",
+            "# RHOME is needed for Rscript",
             "export RHOME=$R_HOME",
-            "export RDIR=$R_HOME",
             "export R_ENVIRON=$R_HOME/etc/Renviron",
             "Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
         ]
