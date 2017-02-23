@@ -10,9 +10,9 @@ Reproducibility is important and `build_chtc.py` establishes a framework with th
 
 ## What it does
 `build_chtc.py` makes two things:
-   1. `<software>-<version>.sh`: a shell script to compile/build one or more software packages described in a JSON file.
-   2. `<software>-<version>.submit`: a corresponding HTCondor submit file so that the shell script will run in the HTCondor Pool.
-A few minutes after running `condor_submit <software>-<version>.submit`, you should have a file called `<software>-<version>.tar.gz`.  
+   1. A shell script to compile/build one or more software packages described in a JSON file.
+   2. A corresponding HTCondor submit file so that the shell script will run in the HTCondor Pool.
+A few minutes after running `condor_submit`, you should have your tarball.  
 
 ## What it doesn't do
    * This script builds the software only.  It does not provide you with another submit file or script to run that software through HTCondor.  Example scripts and pipelines will be provided through documentation, Gists, blog posts, etc.  Hints about where to go to find relevant examples should be found in the "Comments" field of a software entry in the JSON file.  
