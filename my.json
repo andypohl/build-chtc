@@ -4,7 +4,8 @@
         "Version": "3.3.2-with-dplyr",
         "URL_extends": "http://proxy.chtc.wisc.edu/aapohl/sandboxes/R-3.3.2.tar.gz",
         "Build_Commands": [
-            "export PATH=$BUILDDIR/bin:$PATH",
+            "### SETUP",
+            "",
             "export LD_LIBRARY_PATH=$BUILDDIR/lib:$BUILDDIR/lib64/R/lib",
             "# RDIR was substituted into R and Rscript executables already",
             "export RDIR=$BUILDDIR",
@@ -13,6 +14,8 @@
             "# RHOME is needed for Rscript",
             "export RHOME=$R_HOME",
             "export R_ENVIRON=$R_HOME/etc/Renviron",
+            "",
+            "# INSTALL BELOW", 
             "Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
         ]
     }
