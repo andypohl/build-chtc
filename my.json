@@ -6,5 +6,5 @@
         "Build_Commands": [
             "$BUILDDIR/bin/Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
         ]
-        }
+    }
 ]
