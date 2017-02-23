@@ -1,5 +1,7 @@
 '''Tests for that dictionary class I found on on the internet.'''
 
+import unittest
+import sys
 from chtc import CaseInsensitiveDict
 
 class TestCaseInsensitiveDict(unittest.TestCase):
