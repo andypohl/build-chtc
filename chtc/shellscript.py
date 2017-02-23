@@ -2,8 +2,7 @@
 
 import sys
 import re
-
-from scriptline import ScriptLine
+import os
 
 # Scripts always start with these lines:
 START_LINES = """\
@@ -34,8 +33,10 @@ rm -rf software/"""
 class ScriptLine(object):
     """Just to keep track whether a line is a comment or not."""
     def __init__(self, string):
+        if not isinstance(string, str):
+            raise TypeError("commands must be strings")
         self.line = string
-        comm = re.compile(r'^\s*#')
+        comm = re.compile(r'^\s*(#|$)')
         self.comment = comm.match(self.line) != None
 
     def is_comment(self):
@@ -54,6 +55,10 @@ class ShellScript(object):
         self.lines.extend([ScriptLine(x) for x in END_LINES.split('\n')])
         self.lines[0].comment = False
 
+    def num_commands(self):
+        '''Count the number of commands and return them.'''
+        return sum([not x.is_comment() for x in self.lines])
+
     def add_line(self, line):
         """Add a new string to the list as a ScriptLine"""
         self.lines.insert(self.insert_point, ScriptLine(line))
@@ -62,14 +67,15 @@ class ShellScript(object):
         """Write this to a file called "prefix.sh"."""
         script_name = self.prefix + '.sh'
         try:
-            with open(script_name, 'w') as script:
+            with open(script_name, 'w') as script_fd:
                 for line in self.lines:
                     if (line.is_comment() and comments) or (not line.is_comment()):
-                        script.write(str(line))
+                        script_fd.write(str(line) + '\n')
         except (IOError, OSError):
-            sys.stderr.write("Trouble writing to %s" %(script_name))
-            sys.exit(1)
+            # kick the exception up the line
+            raise OSError("ERROR: trouble writing to %s" %(script_name))
+        else:
+            os.chmod(script_name, 0755)
 
     def __str__(self):
-        return [str(x) for x in self.lines]
-
+        return '\n'.join([str(x) for x in self.lines])
