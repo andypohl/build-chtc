@@ -19,6 +19,36 @@ class SoftJson(object):
                 self.software[soft_entry.prefix] = soft_entry
                 self.defaults[soft_entry.software] = soft_entry.prefix
 
+    def _build_commands_reversed(self, prefix):
+        if not self.software.has_key(prefix):
+            raise LookupError("Couldn't find software %s in the database")
+        software = self.software[prefix]
+        commands_array = []
+        for dep in software.deps:
+            dep_prefix = dep['software'] + '-' + dep['version']
+            dep_commands_array = self._build_commands_reversed(dep_prefix)
+            commands_array.extend(dep_commands_array)
+        commands_array.extend(software.build_commands)
+        return commands_array
+    
+    def build_commands(self, prefix):
+        commands = self._build_commands_reversed(prefix)
+        commands.reverse()
+        return commands
+
+    def lookup(self, software_name, software_version):
+        '''Raise a LookupError if not found. Otherwise return prefix.'''
+        if software_version is not None:
+            prefix = software_name + '-' + software_version
+            if not self.software.has_key(prefix):
+                raise LookupError("Couldn't find %s version %s in database" %(software_name, software_version))
+        else:
+            try:
+                prefix = self.defaults[software_name]
+            except KeyError:
+                raise LookupError("Couldn't find %s in software database" %(software_name))
+        return prefix
+
     def __init__(self, json_files=None):
         '''Initialize with or without files.'''
         self.software = {}

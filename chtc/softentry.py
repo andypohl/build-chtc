@@ -3,6 +3,7 @@
 from urlparse import urlparse
 from caseinsensitivedict import CaseInsensitiveDict
 import dateutil.parser
+import re
 
 class SoftEntry(object):
     '''A single software entry.'''
@@ -66,6 +67,15 @@ class SoftEntry(object):
             raise ValueError("ERROR: Field %s in entry %s in file %s doesn't seem to be a .tar.gz or .tgz file" %(field_name, self.prefix, self.json_filename))
         self.url = url
 
+    # We do build stuff in the $BUILDDIR/src dir.  If we're extending another tarball, we need to
+    # download that, unpack it, and recursively copy ("cp -R") into the directory above us, then
+    # remove the unpacked dir.
+    def _extending_build_commands(self):
+        '''Appends download/unpacking/copying commands to beginning of self.build_commands'''
+        path = urlparse(self.url).path
+        path = re.sub(r'.*\/', '', path)
+        return [u'tar xfz ' + path, u'cp -R software/* ../', u'rm -rf software/']
+
     # Build commands should be an array of strings.  Can't check much beyond that.
     def _get_build_commands(self, json_cid):
         '''Throws TypeErrors and returns nothing.'''
@@ -74,9 +84,16 @@ class SoftEntry(object):
         array = json_cid['build_commands']
         if not isinstance(array, list):
             raise TypeError("ERROR: Field \"Build_Commands\" for entry %s in file %s must be a list" %(self.prefix, self.json_filename))
+        # add some lines to top
+        top_commands = [u'# %s' %(self.prefix), u'wget %s' %(self.url)]
+        if self.extending:
+            top_commands.extend(self._extending_build_commands())
+        array[:0] = top_commands
+        # add a blank commands
+        array.append(u'')
         # array can be empty
         for item in array:
-            if not isinstance(item, unicode):
+            if not isinstance(item, unicode) and not isinstance(item, str):
                 raise TypeError("ERROR: Field \"Build_Commands\" for entry %s in file %s must be a list of strings." %(self.prefix, self.json_filename))
         return array
 
@@ -108,16 +125,6 @@ class SoftEntry(object):
         dt = dateutil.parser.parse(release_date).date()
         return dt
 
-    # We do build stuff in the $BUILDDIR/src dir.  If we're extending another tarball, we need to
-    # download that, unpack it, and recursively copy ("cp -R") into the directory above us, then
-    # remove the unpacked dir.
-    def _add_extending_build_commands(self):
-        '''Appends download/unpacking/copying commands to beginning of self.build_commands'''
-        path = urlparse(self.url).path[1:]
-        additional_commands = ["wget " + self.url, "tar xfz " + path, "cp -R software/* ../", "rm -rf software/"]
-        additional_commands.extend(self.build_commands)
-        self.build_commands = additional_commands
-
     # Kind of a long initialization function but it is mostly error-checking
     def __init__(self, json_dict, json_filename):
         '''Initialize with a dictionary from a JSON.  Can throw exceptions.'''
@@ -133,9 +140,6 @@ class SoftEntry(object):
         self._check_and_set_url(json_cid)
         # OPTIONAL fields: 'Build_Commands', 'Release_Date', 'Previous_Version', 'Next_Version', 'Dependent_Software' 
         self.build_commands = self._get_build_commands(json_cid)
-        # Now that we have the build commands, extend them if necessary
-        if self.extending:
-            self._add_extending_build_commands()
         self.release_date = self._check_release_date(json_cid)
         self.previous_version = self._get_string_field(json_cid, 'previous_version', False)
         self.next_version = self._get_string_field(json_cid, 'next_version', False)

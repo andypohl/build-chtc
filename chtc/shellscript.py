@@ -17,7 +17,7 @@ export PATH=$BUILDDIR/bin:$PATH
 mkdir -p $BUILDDIR/src
 
 # cd into this directory to stage installs:
-cd $BUILDDIR/src"""
+cd $BUILDDIR/src\n"""
 
 # Scripts always end with these lines:
 END_LINES = """\
@@ -33,7 +33,7 @@ rm -rf software/"""
 class ScriptLine(object):
     """Just to keep track whether a line is a comment or not."""
     def __init__(self, string):
-        if not isinstance(string, str):
+        if not isinstance(string, str) and not isinstance(string, unicode):
             raise TypeError("commands must be strings")
         self.line = string
         comm = re.compile(r'^\s*(#|$)')
@@ -63,6 +63,11 @@ class ShellScript(object):
     def add_line(self, line):
         """Add a new string to the list as a ScriptLine"""
         self.lines.insert(self.insert_point, ScriptLine(line))
+
+    def add_lines(self, lines):
+        """Add a list of commands to script."""
+        for line in lines:
+            self.add_line(line)
 
     def write(self, comments=True):
         """Write this to a file called "prefix.sh"."""

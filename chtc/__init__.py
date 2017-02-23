@@ -6,5 +6,7 @@ from chtc.docopt import docopt
 
 # class to make the shell script
 from chtc.shellscript import ShellScript
-
+from chtc.submitfile import SubmitFile
 from chtc.caseinsensitivedict import CaseInsensitiveDict
+from chtc.softentry import SoftEntry
+from chtc.softjson import SoftJson
