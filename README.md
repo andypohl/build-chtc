@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/andypohl/build-chtc.svg?branch=master)](https://travis-ci.org/andypohl/build-chtc)
 # build-chtc
 Build sandboxed tarballs for portable software use at CHTC.  
 
