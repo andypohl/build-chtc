@@ -17,8 +17,8 @@ class TestCaseInsensitiveDict(unittest.TestCase):
         self.assertTrue(self.dict2.has_key('A'))
         self.assertTrue(self.dict2.has_key('a'))
         self.assertFalse(self.dict2.has_key('D'))
-        with self.failUnlessRaises(KeyError, self.dict2['D'])
-        with self.failUnlessRaises(KeyError, self.dict2['d'])
+        self.failUnlessRaises(KeyError, self.dict2['D'])
+        self.failUnlessRaises(KeyError, self.dict2['d'])
 
     def test_lookup(self):
         '''Look up things in the dictionary.'''
