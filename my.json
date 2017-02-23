@@ -4,7 +4,13 @@
         "Version": "3.3.2-with-dplyr",
         "URL_extends": "http://proxy.chtc.wisc.edu/aapohl/sandboxes/R-3.3.2.tar.gz",
         "Build_Commands": [
-            "$BUILDDIR/bin/Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
+            "export PATH=$BUILDDIR/bin:$PATH",
+            "export LD_LIBRARY_PATH=$BUILDDIR/lib:$BUILDDIR/lib64/R/lib",
+            "export R_HOME=$BUILDDIR/lib64/R",
+            "export RHOME=$R_HOME",
+            "export RDIR=$R_HOME",
+            "export R_ENVIRON=$R_HOME/etc/Renviron",
+            "Rscript -e 'install.packages(\"dplyr\", repos=\"https://cran.rstudio.com/\")'"
         ]
     }
 ]
