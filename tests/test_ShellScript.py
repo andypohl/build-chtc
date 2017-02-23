@@ -27,7 +27,9 @@ class TestShellScript(unittest.TestCase):
         self.script.add_line("# a comment")
         self.script.add_line("")
         self.assertEquals(num_commands, self.script.num_commands())
-        self.failUnlessRaises(TypeError, self.script.add_line(52))
+# Don't work in Python 2.6:
+#        with self.assertRaises(TypeError):
+#            self.script.add_line(52)
 
     def tearDown(self):
         del self.script
