@@ -72,7 +72,7 @@ class ShellScript(object):
                     if (line.is_comment() and comments) or (not line.is_comment()):
                         script_fd.write(str(line) + '\n')
         except (IOError, OSError):
-            # kick the exception up the line
+            # kick the exception up the line, though I'm not sure how to test for this
             raise OSError("ERROR: trouble writing to %s" %(script_name))
         else:
             os.chmod(script_name, 0755)
