@@ -2,7 +2,7 @@
 
 from urlparse import urlparse
 from caseinsensitivedict import CaseInsensitiveDict
-import dateutil.parser
+from datetime import datetime
 import re
 
 class SoftEntry(object):
@@ -122,7 +122,7 @@ class SoftEntry(object):
         release_date = json_cid['release_date']
         if not isinstance(release_date, unicode):
             raise TypeError("ERROR: Release_Date for entry %s in file %s must be a string" %(self.prefix, self.json_filename))
-        dt = dateutil.parser.parse(release_date).date()
+        dt = datetime.strptime(str(release_date), "%Y-%m-%d" ).date()
         return dt
 
     # Kind of a long initialization function but it is mostly error-checking
