@@ -27,7 +27,7 @@ rm -rf src/
 
 # tar it up
 cd ../
-tar cfz %s.tar.gz chtc
+tar cfz %s.tar.gz software
 rm -rf software/"""
 
 class ScriptLine(object):
