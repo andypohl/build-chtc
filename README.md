@@ -22,7 +22,8 @@ Before using the program, study the [`software.json` file](https://github.com/an
 
 ```
 [me@laptop:~$ ssh submit-5.chtc.wisc.edu
-[me@submit-5.chtc.wisc.edu:~/build-chtc$ git clone https://github.com/andypohl/build-chtc
+[me@submit-5.chtc.wisc.edu:~$ git clone https://github.com/andypohl/build-chtc
+[me@submit-5.chtc.wisc.edu:~$ cd build-chtc/
 [me@submit-5.chtc.wisc.edu:~/build-chtc$ ./build_chtc.py R 3.3.2
 [me@submit-5.chtc.wisc.edu:~/build-chtc$ condor_submit R-3.3.2.submit
 ```
