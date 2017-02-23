@@ -1,6 +1,5 @@
 '''Tests for that dictionary class I found on on the internet.'''
 
-import unittest
 from chtc import ShellScript
 from chtc.shellscript import START_LINES, END_LINES
 
@@ -9,6 +8,7 @@ class TestShellScript(unittest.TestCase):
     def setUp(self):
         self.script = ShellScript('test')
 
+    @unittest.skipIf(sys.version_info < (2,7))
     def test_minimal(self):
         '''Test the off-the-shelf ShellScript'''
         self.assertGreater(len(self.script.lines), 0)
