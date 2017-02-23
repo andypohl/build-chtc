@@ -74,7 +74,7 @@ class SoftEntry(object):
         '''Appends download/unpacking/copying commands to beginning of self.build_commands'''
         path = urlparse(self.url).path
         path = re.sub(r'.*\/', '', path)
-        return [u'tar xfz ' + path, u'cp -R software/* ../', u'rm -rf software/']
+        return [u'tar xfz ' + path, u'cp -R software/* ../', u'rm -rf software/ ' + path]
 
     # Build commands should be an array of strings.  Can't check much beyond that.
     def _get_build_commands(self, json_cid):
