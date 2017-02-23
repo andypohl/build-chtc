@@ -12,7 +12,8 @@ class TestShellScript(unittest.TestCase):
     def test_minimal(self):
         '''Test the off-the-shelf ShellScript'''
         self.assertGreater(len(self.script.lines), 0)
-        self.assertMultiLineEqual(str(self.script), START_LINES + '\n' + END_LINES)
+        end_lines = END_LINES %(self.script.prefix)
+        self.assertMultiLineEqual(str(self.script), START_LINES + '\n' + end_lines)
 
     def test_adding(self):
         '''Test what happens when adding lines'''

@@ -52,7 +52,8 @@ class ShellScript(object):
         self.prefix = prefix
         self.lines = [ScriptLine(x) for x in START_LINES.split('\n')]
         self.insert_point = len(self.lines)
-        self.lines.extend([ScriptLine(x) for x in END_LINES.split('\n')])
+        end_lines = END_LINES %(self.prefix)
+        self.lines.extend([ScriptLine(x) for x in end_lines.split('\n')])
         self.lines[0].comment = False
 
     def num_commands(self):
