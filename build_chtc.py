@@ -63,8 +63,10 @@ def do_make_build(arguments):
         my_commands = my_software.build_commands(prefix)
         my_shell_script.add_lines(my_commands)
         my_shell_script.add_lines(example_commands, is_examples=True)
-        my_submit_file = chtc.SubmitFile(prefix)
-        my_submit_file.interactive = arguments['--interactive']
+        if arguments['--interactive']:
+            my_submit_file = chtc.InteractiveSubmitFile(prefix)
+        else:
+            my_submit_file = chtc.SubmitFile(prefix)
         my_shell_script.write()
         my_submit_file.write()
     #pprint(arguments)
