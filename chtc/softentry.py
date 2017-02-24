@@ -156,9 +156,7 @@ class SoftEntry(object):
         self.example_dir = self._get_string_field(json_cid, 'Example_Directory', required=False)
         self.example_commands = self._get_string_list(json_cid, 'Example_Commands')
         if not self.example_commands:       
-            if bool(self.example_repo) ^ bool(self.example_dir):
-                raise NameError("ERROR: Need both Example_Repository and Example_Directory if one of them is specified.")
-            else:
+            if bool(self.example_repo) & bool(self.example_dir):
                 self.example_commands = self._generate_example_commands()
         elif bool(self.example_repo) | bool(self.example_dir):
             raise NameError("ERROR: Need to have either Example_Repository/Example_Directory or Example_Commands specfied. Not a combination.")     
