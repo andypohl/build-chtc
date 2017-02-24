@@ -58,9 +58,11 @@ def do_make_build(arguments):
         prefix = my_software.lookup(arguments['<software>'], arguments['--software-version'])
         required_subs = my_software.required_substitutions(prefix)
         substitutions = get_substitutions(arguments['--substitute'], required_subs)
+        example_commands = my_software.example_commands(prefix)
         my_shell_script = chtc.ShellScript(prefix, substitutions)
         my_commands = my_software.build_commands(prefix)
         my_shell_script.add_lines(my_commands)
+        my_shell_script.add_lines(example_commands, is_examples=True)
         my_submit_file = chtc.SubmitFile(prefix)
         my_submit_file.interactive = arguments['--interactive']
         my_shell_script.write()

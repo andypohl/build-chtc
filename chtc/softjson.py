@@ -35,8 +35,15 @@ class SoftJson(object):
     def build_commands(self, prefix):
         '''Build up the list of commands, recursively'''
         commands = self._build_commands_reversed(prefix)
-        commands.reverse()
+        #commands.reverse()
         return commands
+
+    def example_commands(self, prefix):
+        '''Return the example_commands list or []'''
+        if not self.software.has_key(prefix):
+            raise LookupError("Couldn't find software %s in the database")
+        software = self.software[prefix]
+        return software.example_commands
 
     def lookup(self, software_name, software_version):
         '''Raise a LookupError if not found. Otherwise return prefix.'''

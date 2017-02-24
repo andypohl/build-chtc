@@ -3,9 +3,7 @@
         "Software": "R",
         "Version": "3.3.2-with-packages",
         "URL_extends": "http://proxy.chtc.wisc.edu/aapohl/sandboxes/R-3.3.2.tar.gz",
-        "Substitutions": ["RPACKS"],
-        "Example_Git_Repository": "https://github.com/andypohl/chtc-recipes.git",
-        "Example_Subdirectory": "chtc-recipes/R/build_chtc.py/basic",
+        "Substitutions": ["R_PACKAGES"],
         "Build_Commands": ["",
             "##### ENVIRONMENT CONFIGURATION",
             "",
@@ -19,7 +17,7 @@
             "export R_ENVIRON=$R_HOME/etc/Renviron",
             "",
             "##### PACKAGE INSTALLATION", 
-            "Rscript -e 'install.packages(c(\"{{RPACKS}}\"), repos=\"https://cran.rstudio.com/\")'"
+            "Rscript -e 'install.packages(c(\"{{R_PACKAGES}}\"), repos=\"https://cran.rstudio.com/\")'"
         ]
-    }
+     }
 ]

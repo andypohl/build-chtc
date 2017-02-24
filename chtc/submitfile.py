@@ -10,7 +10,7 @@ universe = %s
 log = %s.log
 output = %s.out
 error = %s.err
-transfer_output_files = %s.tar.gz
+transfer_output_files = %s.tar.gz%s
 should_transfer_files = yes
 when_to_transfer_output = on_exit
 request_memory = %s
@@ -30,7 +30,8 @@ class SubmitFile(object):
                 variable_lines = "transfer_input_files = %s\n+IsBuildJob = true\nrequirements = (OpSysAndVer =?= \"SL6\") && (IsBuildSlot == true)" %(script_filename)
             else:
                 variable_lines = "executable = " + script_filename
-            lines = _LINES %(self.universe, variable_lines, self.prefix, self.prefix, self.prefix, self.prefix, self.memory, self.disk)
+            examples_tarball = ", examples-" + self.prefix + ".tar.gz" if self.has_examples else ""
+            lines = _LINES %(self.universe, variable_lines, self.prefix, self.prefix, self.prefix, self.prefix, examples_tarball, self.memory, self.disk)
             fd.write(lines)
 
     def __init__(self, prefix):
@@ -40,6 +41,7 @@ class SubmitFile(object):
         self.disk = "5GB"
         self.memory = "1GB"
         self.interactive = False
+        self.has_examples = False
 
 ##### Command-line testing (not in test suite)
 def __run_tests():

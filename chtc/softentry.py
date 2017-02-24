@@ -130,6 +130,13 @@ class SoftEntry(object):
         dt = datetime.strptime(str(release_date), "%Y-%m-%d" ).date()
         return dt
 
+    def _generate_example_commands(self):
+        '''Just return a simple array of commands to git something and copy files'''
+        repo_base_dir = self.example_dir.split('/')[0]
+        return ["git clone " + self.example_repo,
+                "cp -r %s/* $EXAMPLEDIR/" %(self.example_dir),
+                "rm -rf " + repo_base_dir]
+
     # Kind of a long initialization function but it is mostly error-checking
     def __init__(self, json_dict, json_filename):
         '''Initialize with a dictionary from a JSON.  Can throw exceptions.'''
@@ -145,6 +152,16 @@ class SoftEntry(object):
         self._check_and_set_url(json_cid)
         # OPTIONAL fields: 'Build_Commands', 'Release_Date', 'Previous_Version', 'Next_Version', 'Dependent_Software' 
         self.build_commands = self._get_build_commands(json_cid)
+        self.example_repo = self._get_string_field(json_cid, 'Example_Repository', required=False)
+        self.example_dir = self._get_string_field(json_cid, 'Example_Directory', required=False)
+        self.example_commands = self._get_string_list(json_cid, 'Example_Commands')
+        if not self.example_commands:       
+            if bool(self.example_repo) ^ bool(self.example_dir):
+                raise NameError("ERROR: Need both Example_Repository and Example_Directory if one of them is specified.")
+            else:
+                self.example_commands = self._generate_example_commands()
+        elif bool(self.example_repo) | bool(self.example_dir):
+            raise NameError("ERROR: Need to have either Example_Repository/Example_Directory or Example_Commands specfied. Not a combination.")     
         self.required_substitutions = self._get_string_list(json_cid, 'Substitutions')
         self.release_date = self._check_release_date(json_cid)
         self.previous_version = self._get_string_field(json_cid, 'previous_version', False)
