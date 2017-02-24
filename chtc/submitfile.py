@@ -1,8 +1,5 @@
 """Class for HTCondor submit files."""
 
-import sys
-import re
-import os
 from ordereddict import OrderedDict
 
 # The base class is mostly an OrderedDict, which means we can iterate over the iterkeys
@@ -36,6 +33,7 @@ class SubmitFile(OrderedDict):
         self['queue'] = ''
 
     def __str__(self):
+        '''Convert to string.'''
         bigstring = ''
         for key in self.iterkeys():
             value = self[key]
@@ -50,6 +48,7 @@ class SubmitFile(OrderedDict):
         return bigstring.rstrip()
 
     def write(self):
+        '''Write a converted string out to the filename we've known in advance.'''
         with open(self.filename, 'w') as fd:
             fd.write(str(self))
 
