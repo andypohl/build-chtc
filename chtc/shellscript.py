@@ -88,8 +88,7 @@ class ShellScript(object):
     """Describes a shell script, which can be written to a file."""
     def __init__(self, prefix, substitutions=None):
         self.prefix = prefix
-        if substitutions is not None:
-            self.substitutions = substitutions
+        self.substitutions = substitutions
         self.template_lines = self._add_template_lines(LINES)
         self.example_template_lines = self._add_template_lines(EXAMPLE_LINES)
         self.command_lines = []
