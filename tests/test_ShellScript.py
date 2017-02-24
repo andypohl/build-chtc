@@ -3,7 +3,6 @@
 import unittest
 import sys
 from chtc import ShellScript
-from chtc.shellscript import START_LINES, END_LINES
 
 class TestShellScript(unittest.TestCase):
     '''Tests for ShellScript'''
