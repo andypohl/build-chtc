@@ -2,8 +2,6 @@
     {
         "Software": "R",
         "Version": "3.3.2",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-10-26",
         "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
@@ -32,8 +30,6 @@
     {
         "Software": "curl",
         "Version": "7.50.3",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-09-14",
         "URL": "http://curl.askapache.com/download/curl-7.50.3.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/curl-7.50.3.tar.gz",
@@ -49,8 +45,6 @@
     {
         "Software": "bzip",
         "Version": "1.0.6",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2010-09-20",
         "URL": "http://bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/bzip2-1.0.6.tar.gz",
@@ -72,8 +66,6 @@
     {
         "Software": "pcre",
         "Version": "8.39",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-06-14",
         "URL": "http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.39.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/pcre-8.39.tar.gz",
@@ -89,8 +81,6 @@
     {
         "Software": "pcre",
         "Version": "8.40",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2017-01-11",
         "URL": "http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.40.tar.gz",
         "Build_Commands": [
@@ -105,8 +95,6 @@
     {
         "Software": "readline",
         "Version": "7.0",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-09-15",
         "URL": "https://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/readline-7.0.tar.gz",
@@ -122,8 +110,6 @@
     {
         "Software": "xz",
         "Version": "5.2.2",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2015-09-29",
         "URL": "http://tukaani.org/xz/xz-5.2.2.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/xz-5.2.2.tar.gz",
@@ -139,8 +125,6 @@
     {
         "Software": "zlib",
         "Version": "1.2.8",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2015-09-29",
         "URL": "http://www.zlib.net/fossils/zlib-1.2.8.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/zlib-1.2.8.tar.gz",
@@ -156,8 +140,6 @@
     {
         "Software": "libpng",
         "Version": "1.6.26",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-10-20",
         "URL": "ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng16/libpng-1.6.26.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/libpng-1.6.26.tar.gz",
@@ -173,8 +155,6 @@
     {
         "Software": "libjpeg",
         "Version": "v9b",
-        "Previous_Version": null,
-        "Next_Version": null,
         "Release_Date": "2016-01-17",
         "URL": "http://www.ijg.org/files/jpegsrc.v9b.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/jpegsrc.v9b.tar.gz",
