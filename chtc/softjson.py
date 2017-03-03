@@ -74,10 +74,3 @@ class SoftJson(object):
                 raise TypeError("json_files should be list of strings of filenames or a string of a filename")
             for json_file in json_files:
                 self.add_json_file(json_file)
-
-def __run_tests():
-    x = '../software.json'
-    y = SoftJson(x)
-
-if __name__ == '__main__':
-    __run_tests()

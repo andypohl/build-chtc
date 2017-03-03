@@ -58,11 +58,3 @@ class SoftEntry(CaseInsensitiveDict):
         '''Return the prefix string i.e. "<software>-<version>"'''
         return self.prefix
 
-def __run_tests():
-    x = '{"Software": "R", "Version": "3.7", "Release_Date": "2016-10-21", "Dependent_Software": {"Software": "libjpeg", "Version": "1.0"}}'
-    y = json.loads(x, cls=SoftEntryDecoder)
-    print y
-    print type(y)
-
-if __name__ == '__main__':
-    __run_tests()
