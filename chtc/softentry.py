@@ -38,6 +38,8 @@ class SoftEntry(CaseInsensitiveDict):
             # replace string version of date with a datetime date
             date_string = self.pop('release_date')
             self.release_date = datetime.strptime(date_string, "%Y-%m-%d" ).date()
+        else:
+            self.release_date = None
         self.pre_commands = [u'# ' + self.prefix]
         if 'url' in self:
             self.pre_commands += [u'wget ' + self['url']]
@@ -58,3 +60,6 @@ class SoftEntry(CaseInsensitiveDict):
         '''Return the prefix string i.e. "<software>-<version>"'''
         return self.prefix
 
+    def get_release_date(self):
+        '''Return release date as datetime.date'''
+        return self.release_date
