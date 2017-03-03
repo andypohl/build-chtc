@@ -1,7 +1,7 @@
 '''Tests for that dictionary class I found on on the internet.'''
 
-#import unittest2 as unittest
-import unittest
+import unittest2 as unittest
+#import unittest
 import sys
 from chtc import CaseInsensitiveDict
 
@@ -18,11 +18,9 @@ class TestCaseInsensitiveDict(unittest.TestCase):
         self.assertTrue(self.dict2.has_key('A'))
         self.assertTrue(self.dict2.has_key('a'))
         self.assertFalse(self.dict2.has_key('D'))
-# Don't work in Python 2.6:
-#        with self.failUnlessRaises(KeyError):
-#            self.dict2['D']
-#        with self.failUnlessRaises(KeyError):
-#            self.dict2['d']
+        # Don't work in Python 2.6 without unittest2 backport (get with nose2)
+        self.assertRaises(KeyError, self.dict2.__getitem__, 'D')
+        self.assertRaises(KeyError, self.dict2.__getitem__, 'd')
 
     def test_lookup(self):
         '''Look up things in the dictionary.'''
@@ -31,13 +29,12 @@ class TestCaseInsensitiveDict(unittest.TestCase):
         self.assertEqual(self.dict1['c'], self.dict2['c'])
         self.assertNotEqual(self.dict1['b'], 12)
 
-# Don't work in Python 2.6:
-#    @unittest.skipIf(sys.version_info < (2,7))
-#    def test_misc(self):
-#        '''A few other misc tests.'''
-#        # this seems really hacky
-#        if 'assertDictEqual' in dir(self):
-#            self.assertDictEqual(self.dict1, self.dict2)
+    # Don't work in Python 2.6:
+    def test_misc(self):
+        '''A few other misc tests.'''
+        # this seems really hacky
+        if 'assertDictEqual' in dir(self):
+            self.assertDictEqual(self.dict1, self.dict2)
 
     def tearDown(self):
         del self.dict1
