@@ -8,5 +8,6 @@ from chtc.docopt import docopt
 from chtc.shellscript import ShellScript
 from chtc.submitfile import SubmitFile
 from chtc.caseinsensitivedict import CaseInsensitiveDict
+from chtc.softentry import SoftEntryDecoder
 from chtc.softentry import SoftEntry
 from chtc.softjson import SoftJson

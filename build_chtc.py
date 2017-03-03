@@ -60,7 +60,7 @@ def do_make_build(arguments):
         substitutions = get_substitutions(arguments['--substitute'], required_subs)
         example_commands = my_software.example_commands(prefix)
         my_shell_script = chtc.ShellScript(prefix, substitutions)
-        my_commands = my_software.build_commands(prefix)
+        my_commands = my_software.build_commands_recursive(prefix)
         my_shell_script.add_lines(my_commands)
         my_shell_script.add_lines(example_commands, is_examples=True)
         if arguments['--interactive']:

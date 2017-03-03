@@ -5,6 +5,7 @@ overriding entries, inheritence, etc.
 
 import json
 import os
+from softentry import SoftEntryDecoder
 from softentry import SoftEntry
 
 class SoftJson(object):
@@ -13,37 +14,33 @@ class SoftJson(object):
     def add_json_file(self, json_file):
         '''Load JSON file and add contents to current database.'''
         with open(json_file) as fp:
-            json_array = json.load(fp)
-            for entry in json_array:
-                soft_entry = SoftEntry(entry, json_file)
-                self.software[soft_entry.prefix] = soft_entry
-                self.defaults[soft_entry.software] = soft_entry.prefix
+            json_array = json.load(fp, cls=SoftEntryDecoder)
+            for soft_entry in json_array:
+                prefix = soft_entry.get_prefix()
+                self.software[prefix] = soft_entry
+                self.defaults[soft_entry['software']] = prefix
 
-    def _build_commands_reversed(self, prefix):
+    def build_commands_recursive(self, prefix):
         '''Inner recursive function which needs reversing in an outer function.'''
-        if not self.software.has_key(prefix):
+        if prefix not in self.software:
             raise LookupError("Couldn't find software %s in the database")
         software = self.software[prefix]
         commands_array = []
-        for dep in software.deps:
-            dep_prefix = dep['software'] + '-' + dep['version']
-            dep_commands_array = self._build_commands_reversed(dep_prefix)
-            commands_array.extend(dep_commands_array)
-        commands_array.extend(software.build_commands)
+        if 'dependent_software' in software:
+            for dep in software['dependent_software']:
+                dep_commands_array = self.build_commands_recursive(dep.get_prefix())
+                commands_array.extend(dep_commands_array)
+        commands_array.extend(software['build_commands'])
         return commands_array
-    
-    def build_commands(self, prefix):
-        '''Build up the list of commands, recursively'''
-        commands = self._build_commands_reversed(prefix)
-        #commands.reverse()
-        return commands
 
     def example_commands(self, prefix):
         '''Return the example_commands list or []'''
         if not self.software.has_key(prefix):
             raise LookupError("Couldn't find software %s in the database")
         software = self.software[prefix]
-        return software.example_commands
+        if 'example_commands' not in software:
+            return []
+        return software['example_commands']
 
     def lookup(self, software_name, software_version):
         '''Raise a LookupError if not found. Otherwise return prefix.'''
@@ -62,7 +59,9 @@ class SoftJson(object):
         '''Lookup a substitution list given a prefix'''
         if not self.software.has_key(prefix):
             raise LookupError("Couldn't find software %s in the database")
-        return self.software[prefix].required_substitutions
+        if 'substitutions' not in self.software[prefix]:
+            return []
+        return self.software[prefix]['substitutions']
 
     def __init__(self, json_files=None):
         '''Initialize with or without files.'''
@@ -75,3 +74,10 @@ class SoftJson(object):
                 raise TypeError("json_files should be list of strings of filenames or a string of a filename")
             for json_file in json_files:
                 self.add_json_file(json_file)
+
+def __run_tests():
+    x = '../software.json'
+    y = SoftJson(x)
+
+if __name__ == '__main__':
+    __run_tests()
