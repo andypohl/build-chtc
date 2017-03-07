@@ -12,6 +12,7 @@ class SubmitFile(OrderedDict):
     def __init__(self, prefix):
         '''Just define some basics'''
         OrderedDict.__init__(self)
+        self._locked = False
         self.prefix = prefix
         self.script_name = prefix + '.sh'
         self.filename = prefix + '.submit'
@@ -31,6 +32,7 @@ class SubmitFile(OrderedDict):
         self['request_disk'] = '5GB'
         self['request_memory'] = '1GB'
         self['queue'] = ''
+        self._locked = True
 
     def __str__(self):
         '''Convert to string.'''
@@ -46,6 +48,12 @@ class SubmitFile(OrderedDict):
                     line = line + ' = ' + value
                 bigstring = bigstring + line + '\n'
         return bigstring.rstrip()
+
+    def __setitem__(self, key, value):
+        '''Don't allow additional lines to the submit file.'''
+        if self._locked and key not in self:
+            raise KeyError("Add to submit file specification by extending class.")
+        OrderedDict.__setitem__(self, key, value)
 
     def write(self):
         '''Write a converted string out to the filename we've known in advance.'''
