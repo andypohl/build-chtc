@@ -1,0 +1,10 @@
+[
+    {
+        "Software": "MySoft",
+        "Version": "1.0",
+        "URL": "http://example.com/MySoft-1.0.tar.gz",
+        "Build_Commands":[
+            "tar xvf MySoft-1.0.tar.gz"
+        ]   
+    }
+]
