@@ -4,20 +4,20 @@ import sys
 import re
 import os
 
-# Scripts always start with these lines:
-LINES = """\
+# Build scripts always have these lines:
+BUILD_LINES = """\
 #!/bin/bash
 
 # Set up environment:
-BUILDDIR=$_CONDOR_SCRATCH_DIR/software
-export LD_LIBRARY_PATH=$BUILDDIR/lib
-export PATH=$BUILDDIR/bin:$PATH
+SOFTDIR=$_CONDOR_SCRATCH_DIR/software
+export LD_LIBRARY_PATH=$SOFTDIR/lib
+export PATH=$SOFTDIR/bin:$PATH
 
 # Set up main build directory:
-mkdir -p $BUILDDIR/src
+mkdir -p $SOFTDIR/src
 
 # cd into this directory to stage installs:
-cd $BUILDDIR/src
+cd $SOFTDIR/src
 
 #### BUILDING PHASE
 
@@ -31,23 +31,8 @@ rm -rf src/
 
 # tar it up
 cd ../
-tar cfz %s.tar.gz software
-rm -rf $BUILDDIR
-"""
-EXAMPLE_LINES = """\
-#### EXAMPLES PACKAGING
-
-export EXAMPLEDIR=$_CONDOR_SCRATCH_DIR/examples
-mkdir -p $EXAMPLEDIR
-cd $_CONDOR_SCRATCH_DIR
-
-{{|EXAMPLE_COMMANDS|}}
-
-cd $_CONDOR_SCRATCH_DIR
-tar cfz examples-%s.tar.gz $EXAMPLEDIR
-rm -rf $EXAMPLEDIR
-
-#### ALL DONE
+tar cfz {{|PREFIX|}}.tar.gz software
+rm -rf $SOFTDIR
 """
 
 class ScriptLine(object):
@@ -82,38 +67,32 @@ class ShellScript(object):
 
     def _add_template_lines(self, tmp):
         '''Process templates'''
-        lines = tmp %(self.prefix)
+        lines = tmp
         return [ScriptLine(x) for x in lines.split('\n')]
 
     """Describes a shell script, which can be written to a file."""
     def __init__(self, prefix, substitutions=None):
         self.prefix = prefix
         self.substitutions = substitutions
-        self.template_lines = self._add_template_lines(LINES)
-        self.example_template_lines = self._add_template_lines(EXAMPLE_LINES)
         self.command_lines = []
-        self.example_lines = []
+        self.template_lines = self._add_template_lines(BUILD_LINES)
         self.template_lines[0].comment = False
 
     def num_commands(self):
         '''Inefficiently count the number of commands and return them.'''
         return sum([not x.is_comment() for x in self.catted()])
 
-    def add_line(self, line, substitutions=None, is_example=False):
+    def add_line(self, line, substitutions=None):
         """Add a new string to the list as a ScriptLine"""
         substs = self.substitutions
         if substitutions is not None:
             substs = substitutions
-        # I don't like this.  There must be some way to abstract this better.
-        if is_example:
-            self.example_lines.append(ScriptLine(line, substs))
-        else:
-            self.command_lines.append(ScriptLine(line, substs))
+        self.command_lines.append(ScriptLine(line, substs))
 
-    def add_lines(self, lines, substitutions=None, is_examples=False):
+    def add_lines(self, lines, substitutions=None):
         """Add a list of commands to script."""
         for line in lines:
-            self.add_line(line, substitutions, is_examples)
+            self.add_line(line, substitutions)
 
     def write(self, comments=True):
         """Write this to a file called "prefix.sh"."""
@@ -134,17 +113,14 @@ class ShellScript(object):
         all_lines = []
         cleaned = []
         template_lines = self.template_lines
-        if len(self.example_lines) > 0:
-            template_lines.extend(self.example_template_lines)
         for tmp_line in template_lines:
             if str(tmp_line).strip() == "{{|BUILD_COMMANDS|}}":
                 all_lines.extend(self.command_lines)
-            elif str(tmp_line).strip() == "{{|EXAMPLE_COMMANDS|}}":
-                all_lines.extend(self.example_lines)
             else:
                 all_lines.append(tmp_line)
         if comments==False:
             for line in all_lines:
+                line.replace("{{|PREFIX|}}", self.prefix)
                 if not line.is_comment():
                     cleaned.append(line)
         else:

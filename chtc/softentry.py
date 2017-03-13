@@ -63,3 +63,8 @@ class SoftEntry(CaseInsensitiveDict):
     def get_release_date(self):
         '''Return release date as datetime.date'''
         return self.release_date
+
+    def get_comments(self):
+        if 'comments' in self:
+            return self['comments']
+        return None

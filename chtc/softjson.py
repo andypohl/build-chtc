@@ -33,15 +33,6 @@ class SoftJson(object):
         commands_array.extend(software['build_commands'])
         return commands_array
 
-    def example_commands(self, prefix):
-        '''Return the example_commands list or []'''
-        if not self.software.has_key(prefix):
-            raise LookupError("Couldn't find software %s in the database")
-        software = self.software[prefix]
-        if 'example_commands' not in software:
-            return []
-        return software['example_commands']
-
     def lookup(self, software_name, software_version):
         '''Raise a LookupError if not found. Otherwise return prefix.'''
         if software_version is not None:
@@ -62,6 +53,12 @@ class SoftJson(object):
         if 'substitutions' not in self.software[prefix]:
             return []
         return self.software[prefix]['substitutions']
+
+    def get_comments(self, prefix):
+        '''Lookup comments given a prefix'''
+        if not self.software.has_key(prefix):
+            raise LookupError("Couldn't find software %s in the database")
+        return self.software[prefix].get_comments()
 
     def __init__(self, json_files=None):
         '''Initialize with or without files.'''
