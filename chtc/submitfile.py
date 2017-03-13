@@ -17,14 +17,15 @@ class SubmitFile(OrderedDict):
         self.script_name = prefix + '.sh'
         self.filename = prefix + '.submit'
         self.tarball = prefix + '.tar.gz'
-        self.example_tarball = 'examples-' + prefix + '.tar.gz'
         self['universe'] = 'vanilla'
+        self['grid_resource'] = None
+        self['remote_universe'] = None
         self['executable'] = self.script_name
         self['log'] = prefix + '.log'
         self['error'] = prefix + '.err'
         self['output'] = prefix + '.out'
         self['transfer_input_files'] = None
-        self['transfer_output_files'] = [self.example_tarball]
+        self['transfer_output_files'] = [self.tarball]
         self['should_transfer_files'] = 'yes'
         self['when_to_transfer_output'] = 'on_exit'
         self['requirements'] = None
@@ -47,7 +48,7 @@ class SubmitFile(OrderedDict):
                 if len(value) > 0:
                     line = line + ' = ' + value
                 bigstring = bigstring + line + '\n'
-        return bigstring.rstrip()
+        return bigstring.rstrip() + '\n'
 
     def __setitem__(self, key, value):
         '''Don't allow additional lines to the submit file.'''
@@ -62,7 +63,7 @@ class SubmitFile(OrderedDict):
 
 # Inherited class 
 class InteractiveSubmitFile(SubmitFile):
-    # Slightly different than the 
+    # Slightly different than the regular SubmitFile class
     def __init__(self, prefix):
         SubmitFile.__init__(self, prefix)
         self['executable'] = None
@@ -71,6 +72,13 @@ class InteractiveSubmitFile(SubmitFile):
         self['transfer_input_files'] = [self.script_name]
 
 # Could also have a BOSCO-style submit file too.
+class BoscoSubmitFile(SubmitFile):
+    # Bosco flavor
+    def __init__(self, prefix, ssh_submit):
+        SubmitFile.__init__(self, prefix)
+        self['universe'] = "grid"
+        self['remote_universe'] = "vanilla"
+        self['grid_resource'] = "batch condor " + ssh_submit
 
 ##### Command-line testing (not in test suite)
 def __run_tests():

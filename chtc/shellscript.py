@@ -9,15 +9,15 @@ BUILD_LINES = """\
 #!/bin/bash
 
 # Set up environment:
-SOFTDIR=$_CONDOR_SCRATCH_DIR/software
-export LD_LIBRARY_PATH=$SOFTDIR/lib
-export PATH=$SOFTDIR/bin:$PATH
+SOFTWAREDIR=$_CONDOR_SCRATCH_DIR/software
+export LD_LIBRARY_PATH=$SOFTWAREDIR/lib
+export PATH=$SOFTWAREDIR/bin:$PATH
 
 # Set up main build directory:
-mkdir -p $SOFTDIR/src
+mkdir -p $SOFTWAREDIR/src
 
 # cd into this directory to stage installs:
-cd $SOFTDIR/src
+cd $SOFTWAREDIR/src
 
 #### BUILDING PHASE
 
@@ -32,8 +32,7 @@ rm -rf src/
 # tar it up
 cd ../
 tar cfz {{|PREFIX|}}.tar.gz software
-rm -rf $SOFTDIR
-"""
+rm -rf $SOFTWAREDIR"""
 
 class ScriptLine(object):
     """Just to keep track whether a line is a comment or not."""
@@ -118,13 +117,10 @@ class ShellScript(object):
                 all_lines.extend(self.command_lines)
             else:
                 all_lines.append(tmp_line)
-        if comments==False:
-            for line in all_lines:
-                line.replace("{{|PREFIX|}}", self.prefix)
-                if not line.is_comment():
-                    cleaned.append(line)
-        else:
-            cleaned = all_lines
+        for line in all_lines:
+            line.substitute("|PREFIX|", self.prefix)
+            if comments or (not comments and not line.is_comment()):
+                cleaned.append(line)
         return cleaned
 
     def __str__(self):

@@ -9,11 +9,11 @@
         "Build_Commands": [
             "tar xfz R-3.3.2.tar.gz",
             "cd R-3.3.2/",
-            "./configure CFLAGS=\"-I$BUILDDIR/include\" LDFLAGS=\"-L$BUILDDIR/lib\" --prefix=$BUILDDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
             "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
-            "base=$(basename $BUILDDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $BUILDDIR/bin/R $BUILDDIR/lib64/R/bin/R $BUILDDIR/lib64/R/etc/Makeconf",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
             "cd ../"
         ],
         "Dependent_Software": [
@@ -36,7 +36,7 @@
         "Build_Commands": [
             "tar xfz curl-7.50.3.tar.gz",
             "cd curl-7.50.3/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -72,7 +72,7 @@
         "Build_Commands": [
             "tar xfz pcre-8.39.tar.gz",
             "cd pcre-8.39/",
-            "./configure --prefix=$BUILDDIR --enable-utf8",
+            "./configure --prefix=$SOFTWAREDIR --enable-utf8",
             "make",
             "make install",
             "cd ../"
@@ -86,7 +86,7 @@
         "Build_Commands": [
             "tar xfz pcre-8.40.tar.gz",
             "cd pcre-8.40/",
-            "./configure --prefix=$BUILDDIR --enable-utf8",
+            "./configure --prefix=$SOFTWAREDIR --enable-utf8",
             "make",
             "make install",
             "cd ../"
@@ -101,7 +101,7 @@
         "Build_Commands": [
             "tar xfz readline-7.0.tar.gz",
             "cd readline-7.0/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -116,7 +116,7 @@
         "Build_Commands": [
             "tar xfz xz-5.2.2.tar.gz",
             "cd xz-5.2.2/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -131,7 +131,7 @@
         "Build_Commands": [
             "tar xfz zlib-1.2.8.tar.gz",
             "cd zlib-1.2.8/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -146,7 +146,7 @@
         "Build_Commands": [
             "tar xfz libpng-1.6.26.tar.gz",
             "cd libpng-1.6.26/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -161,7 +161,7 @@
         "Build_Commands": [
             "tar xfz jpegsrc.v9b.tar.gz",
             "cd jpeg-9b/",
-            "./configure --prefix=$BUILDDIR",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"

@@ -42,12 +42,15 @@ class SoftEntry(CaseInsensitiveDict):
             self.release_date = None
         self.pre_commands = [u'# ' + self.prefix]
         if 'url' in self:
-            self.pre_commands += [u'wget ' + self['url']]
+            self.pre_commands = self.pre_commands +  [u'wget ' + self['url']]
+        if 'build_commands' in self:
+            self['build_commands'] = self.pre_commands + self['build_commands']
+
     # Subclasses hopefully use this too
     def __str__(self):
         if 'build_commands' not in self:
             return ''
-        return '\n'.join(self.pre_commands + [''] + self['build_commands'])
+        return '\n'.join(self['build_commands'])
 
     # Ordered by release date by default
     def __lt__(self, other):
