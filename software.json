@@ -5,7 +5,7 @@
         "Release_Date": "2016-10-26",
         "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
-        "Comment": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
         "Build_Commands": [
             "tar xfz R-3.3.2.tar.gz",
             "cd R-3.3.2/",
