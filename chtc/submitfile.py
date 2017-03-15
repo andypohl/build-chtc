@@ -31,7 +31,7 @@ class SubmitFile(OrderedDict):
         self['requirements'] = None
         self['+IsBuildJob'] = None
         self['request_disk'] = '5GB'
-        self['request_memory'] = '1GB'
+        self['request_memory'] = '500MB'
         self['queue'] = ''
         self._locked = True
 
