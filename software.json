@@ -1,30 +1,39 @@
 [
     {
-        "Software": "R",
-        "Version": "3.3.2",
-        "Release_Date": "2016-10-26",
-        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
-        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Software": "bzip",
+        "Version": "1.0.6",
+        "Release_Date": "2010-09-20",
+        "URL": "http://bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/bzip2-1.0.6.tar.gz",
         "Build_Commands": [
-            "tar xfz R-3.3.2.tar.gz",
-            "cd R-3.3.2/",
-            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "tar xfz bzip2-1.0.6.tar.gz",
+            "pushd bzip2-1.0.6/",
+            "sed -i 's/CFLAGS=/CFLAGS=-fPIC /' Makefile",
+            "make",
+            "make -f Makefile-libbz2_so",
+            "cp -vp *.so.* ../../lib/",
+            "make install PREFIX=../..",
+            "cd ../../bin/",
+            "rm -f bzcmp bzegrep bzfgrep bzless",
+            "ln -s bzdiff bzcmp",
+            "ln -s bzgrep bzegrep",
+            "ln -s bzgrep bzfgrep",
+            "ln -s bzless bzmore",
+            "popd"
+        ]
+    },
+    {
+        "Software": "curl",
+        "Version": "7.49.1",
+        "Release_Date": "2016-05-30",
+        "URL": "http://curl.askapache.com/download/curl-7.49.1.tar.gz",
+        "Build_Commands": [
+            "tar xfz curl-7.49.1.tar.gz",
+            "cd curl-7.49.1/",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
-            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
-            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
             "cd ../"
-        ],
-        "Dependent_Software": [
-            {"Software": "curl", "Version": "7.50.3"},
-            {"Software": "bzip", "Version": "1.0.6"},
-            {"Software": "pcre", "Version": "8.39"},
-            {"Software": "readline", "Version": "7.0"},
-            {"Software": "xz", "Version": "5.2.2"},
-            {"Software": "zlib", "Version": "1.2.8"},
-            {"Software": "libpng", "Version": "1.6.26"},
-            {"Software": "libjpeg", "Version": "v9b"}
         ]
     },
     {
@@ -40,27 +49,9 @@
             "make",
             "make install",
             "cd ../"
-        ]
-    },
-    {
-        "Software": "bzip",
-        "Version": "1.0.6",
-        "Release_Date": "2010-09-20",
-        "URL": "http://bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/bzip2-1.0.6.tar.gz",
-        "Build_Commands": [
-            "tar xfz bzip2-1.0.6.tar.gz",
-            "pushd bzip2-1.0.6/",
-            "sed -i 's/CFLAGS=/CFLAGS=-fPIC /' Makefile",
-            "make",
-            "make install PREFIX=../..",
-            "cd ../../bin/",
-            "rm -f bzcmp bzegrep bzfgrep bzless",
-            "ln -s bzdiff bzcmp",
-            "ln -s bzgrep bzegrep",
-            "ln -s bzgrep bzfgrep",
-            "ln -s bzless bzmore",
-            "popd"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"}
         ]
     },
     {
@@ -87,6 +78,91 @@
             "tar xfz pcre-8.40.tar.gz",
             "cd pcre-8.40/",
             "./configure --prefix=$SOFTWAREDIR --enable-utf8",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "libjpeg",
+        "Version": "v9b",
+        "Release_Date": "2016-01-17",
+        "URL": "http://www.ijg.org/files/jpegsrc.v9b.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/jpegsrc.v9b.tar.gz",
+        "Build_Commands": [
+            "tar xfz jpegsrc.v9b.tar.gz",
+            "cd jpeg-9b/",
+            "./configure --prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
+        "Software": "libpng",
+        "Version": "1.6.23",
+        "Release_Date": "2016-06-09",
+        "URL": "ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng16/libpng-1.6.23.tar.gz",
+        "Build_Commands": [
+            "tar xfz libpng-1.6.23.tar.gz",
+            "cd libpng-1.6.23/",
+            "# CFLAGS might be unnecessary but CPPFLAGS were needed.  --with-zlib-prefix",
+            "# seems useless",
+            "./configure --prefix=$SOFTWAREDIR CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --with-zlib-prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"}
+        ]
+    },
+    {
+        "Software": "libpng",
+        "Version": "1.6.26",
+        "Release_Date": "2016-10-20",
+        "URL": "ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng16/libpng-1.6.26.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/libpng-1.6.26.tar.gz",
+        "Build_Commands": [
+            "tar xfz libpng-1.6.26.tar.gz",
+            "cd libpng-1.6.26/",
+            "# CFLAGS might be unnecessary but CPPFLAGS were needed.  --with-zlib-prefix",
+            "# seems useless",
+            "./configure --prefix=$SOFTWAREDIR CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --with-zlib-prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"}
+        ]
+    },
+    {
+        "Software": "libxml2",
+        "Version": "2.9.4",
+        "URL": "ftp://xmlsoft.org/libxml2/libxml2-2.9.4.tar.gz",
+        "Build_Commands": [
+            "tar xfz libxml2-2.9.4.tar.gz",
+            "cd libxml2-2.9.4/",
+            "./configure --prefix=$SOFTWAREDIR --without-python CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\"",
+            "make",
+            "make install",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "xz", "Version": "5.2.2"}
+        ]
+    },
+    {
+        "Software": "readline",
+        "Version": "6.3",
+        "Release_Date": "2014-02-26",
+        "URL": "https://ftp.gnu.org/gnu/readline/readline-6.3.tar.gz",
+        "Build_Commands": [
+            "tar xfz readline-6.3.tar.gz",
+            "cd readline-6.3/",
+            "./configure --prefix=$SOFTWAREDIR",
             "make",
             "make install",
             "cd ../"
@@ -138,33 +214,61 @@
         ]        
     },
     {
-        "Software": "libpng",
-        "Version": "1.6.26",
-        "Release_Date": "2016-10-20",
-        "URL": "ftp://ftp.simplesystems.org/pub/libpng/png/src/history/libpng16/libpng-1.6.26.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/libpng-1.6.26.tar.gz",
+        "Software": "R",
+        "Version": "3.3.1",
+        "Release_Date": "2016-06-21",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.1.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.1.tar.gz",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
         "Build_Commands": [
-            "tar xfz libpng-1.6.26.tar.gz",
-            "cd libpng-1.6.26/",
-            "./configure --prefix=$SOFTWAREDIR",
+            "tar xfz R-3.3.1.tar.gz",
+            "cd R-3.3.1/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
+            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
             "cd ../"
-        ]        
+        ],
+        "Dependent_Software": [
+            {"Software": "pcre", "Version": "8.39"},
+            {"Software": "readline", "Version": "6.3"},
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "xz", "Version": "5.2.2"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "curl", "Version": "7.49.1"},
+            {"Software": "libjpeg", "Version": "v9b"},
+            {"Software": "libpng", "Version": "1.6.23"},
+            {"Software": "libxml2", "Version": "2.9.4"}
+        ]
     },
     {
-        "Software": "libjpeg",
-        "Version": "v9b",
-        "Release_Date": "2016-01-17",
-        "URL": "http://www.ijg.org/files/jpegsrc.v9b.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/jpegsrc.v9b.tar.gz",
+        "Software": "R",
+        "Version": "3.3.2",
+        "Release_Date": "2016-10-26",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
         "Build_Commands": [
-            "tar xfz jpegsrc.v9b.tar.gz",
-            "cd jpeg-9b/",
-            "./configure --prefix=$SOFTWAREDIR",
+            "tar xfz R-3.3.2.tar.gz",
+            "cd R-3.3.2/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
+            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
             "cd ../"
-        ]        
+        ],
+        "Dependent_Software": [
+            {"Software": "pcre", "Version": "8.39"},
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "xz", "Version": "5.2.2"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "curl", "Version": "7.50.3"},
+            {"Software": "libjpeg", "Version": "v9b"},
+            {"Software": "libpng", "Version": "1.6.26"},
+            {"Software": "libxml2", "Version": "2.9.4"}
+        ]
     }
 ]
