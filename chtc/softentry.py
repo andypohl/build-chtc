@@ -10,11 +10,14 @@ from json import JSONEncoder
 
 class SoftEntryDecoder(json.JSONDecoder):
 
-    def __init__(self, *args, **kwargs):
-        JSONDecoder.__init__(self, object_hook=self.softentry_parse, *args, **kwargs)
+    def __init__(self, **kwargs):
+        self.distant_url = False
+        if kwargs and 'distant_url' in kwargs:
+            self.distant_url = kwargs['distant_url']
+        JSONDecoder.__init__(self, object_hook=self.softentry_parse)
 
-    def softentry_parse(self, d):
-        return SoftEntry(d)
+    def softentry_parse(self, d, **kwargs):
+        return SoftEntry(d, distant_url=self.distant_url)
 
 class SoftEntry(CaseInsensitiveDict):
 
@@ -29,10 +32,10 @@ class SoftEntry(CaseInsensitiveDict):
         return re.sub(r'.*\/', '', u.path)
     
     # Initializer
-    def __init__(self, cid):
+    def __init__(self, cid, distant_url=False):
         super(SoftEntry, self).__init__(cid)
         self.prefix = self['software'] + '-' + self['version']
-        if 'url_local' in self:
+        if not distant_url and 'url_local' in self:
             self['url'] = self['url_local']
         if 'release_date' in self:
             # replace string version of date with a datetime date
