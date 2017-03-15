@@ -5,7 +5,7 @@
 Make a self-contained program tarball, particularly for CHTC's HTCondor pool.
 This will produce an HTCondor submit file and a corresponding script file.
 
-Usage: build_chtc.py <software> [-s <version_number>] [-i] [--json <file> --json <file>] [-r <VAR=value> -r <VAR=value> -x <VAR=value>]
+Usage: build_chtc.py <software> [-s <version_number>] [-i] [--json <file> --json <file>] [-r <VAR=value> -r <VAR=value> -x <VAR=value> -x <VAR=value>]
        build_chtc.py -h | --help
        build_chtc.py -l | --list-software
 
@@ -66,17 +66,21 @@ def list_to_dict(other_list):
 
 def do_make_build(arguments):
     """The 'real' main(). Option logic here."""
-#    pprint(arguments)
+    #pprint(arguments)
     json_filenames = arguments['--json']
-    my_software = chtc.SoftJson(json_filenames)
+    other_options = list_to_dict(arguments['--other'])
+    distant = False
+    if 'distant_url' in other_options:
+        distant = True
+    my_software = chtc.SoftJson(json_filenames, distant_url=distant)
     if arguments['--list-software']:
         print '--list-software option not implemented yet'
     else:
         prefix = my_software.lookup(arguments['<software>'], arguments['--software-version'])
         required_subs = my_software.required_substitutions(prefix)
+        should_exit = 'should_exit' in other_options
         substitutions = get_substitutions(arguments['--substitute'], required_subs)
-        other_options = list_to_dict(arguments['--other'])
-        my_shell_script = chtc.ShellScript(prefix, substitutions)
+        my_shell_script = chtc.ShellScript(prefix, substitutions, should_exit)
         my_commands = my_software.build_commands_recursive(prefix)
         my_shell_script.add_lines(my_commands)
         if 'bosco' in other_options:
