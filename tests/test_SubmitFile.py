@@ -23,7 +23,7 @@ class TestSubmitFile(unittest.TestCase):
 
     def test_can_change_specific_lines(self):
         '''We can change lines though.'''
-        self.assertEquals(self.sub['request_memory'], '1GB')
+        self.assertEquals(self.sub['request_memory'], '500MB')
         self.sub['request_memory'] = '4GB'
         self.assertEquals(self.sub['request_memory'], '4GB')
 
