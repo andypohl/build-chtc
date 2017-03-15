@@ -15,10 +15,10 @@
             "make install PREFIX=../..",
             "cd ../../bin/",
             "rm -f bzcmp bzegrep bzfgrep bzless",
-            "if [ ! -e bzcmp ]; then ln -s bzdiff bzcmp fi",
-            "if [ ! -e bzegrep ]; then ln -s bzgrep bzegrep fi",
-            "if [ ! -e bzfgrep ]; then ln -s bzgrep bzfgrep fi",
-            "if [ ! -e bzmore ]; then ln -s bzless bzmore fi",
+            "if [ ! -e bzcmp ]; then ln -s bzdiff bzcmp; fi",
+            "if [ ! -e bzegrep ]; then ln -s bzgrep bzegrep; fi",
+            "if [ ! -e bzfgrep ]; then ln -s bzgrep bzfgrep; fi",
+            "if [ ! -e bzmore ]; then ln -s bzless bzmore; fi",
             "popd"
         ]
     },
