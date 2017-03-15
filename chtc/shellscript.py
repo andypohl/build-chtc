@@ -36,7 +36,7 @@ rm -rf $SOFTWAREDIR"""
 
 class ScriptLine(object):
     """Just to keep track whether a line is a comment or not."""
-    def __init__(self, string, substitutions=None):
+    def __init__(self, string, substitutions=None, should_exit=False):
         if not isinstance(string, str) and not isinstance(string, unicode):
             raise TypeError("commands must be strings")
         self.line = string
@@ -49,6 +49,8 @@ class ScriptLine(object):
                 if not isinstance(subst, tuple):
                     raise TypeError("Expecting substitutions to be a list of before/after tuples.")
                 self.substitute(subst[0], subst[1])
+        if self.comment==False and should_exit:
+            self.line = self.line + ' || exit 1'
             
     def substitute(self, before, after):
         '''Try to substitute in mustache style e.g. before="TIMESTAMP", after="2016-03-04"'''
@@ -67,12 +69,13 @@ class ShellScript(object):
     def _add_template_lines(self, tmp):
         '''Process templates'''
         lines = tmp
-        return [ScriptLine(x) for x in lines.split('\n')]
+        return [ScriptLine(x, substitutions=None, should_exit=False) for x in lines.split('\n')]
 
     """Describes a shell script, which can be written to a file."""
-    def __init__(self, prefix, substitutions=None):
+    def __init__(self, prefix, substitutions=None, should_exit=False):
         self.prefix = prefix
         self.substitutions = substitutions
+        self.should_exit = should_exit
         self.command_lines = []
         self.template_lines = self._add_template_lines(BUILD_LINES)
         self.template_lines[0].comment = False
@@ -86,7 +89,7 @@ class ShellScript(object):
         substs = self.substitutions
         if substitutions is not None:
             substs = substitutions
-        self.command_lines.append(ScriptLine(line, substs))
+        self.command_lines.append(ScriptLine(line, substs, self.should_exit))
 
     def add_lines(self, lines, substitutions=None):
         """Add a list of commands to script."""
