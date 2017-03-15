@@ -11,26 +11,38 @@ from softentry import SoftEntry
 class SoftJson(object):
     '''Handles the interplay of multiple JSON files.'''
 
-    def add_json_file(self, json_file):
+    def add_json_file(self, json_file, distant=False):
         '''Load JSON file and add contents to current database.'''
         with open(json_file) as fp:
-            json_array = json.load(fp, cls=SoftEntryDecoder)
+            json_array = json.load(fp, cls=SoftEntryDecoder, distant_url=distant)
             for soft_entry in json_array:
                 prefix = soft_entry.get_prefix()
                 self.software[prefix] = soft_entry
                 self.defaults[soft_entry['software']] = prefix
 
+    def get_deps_recursive(self, prefix):
+        '''Recurse over a definitive list of dependent software and skip ones seen'''
+        if prefix not in self.software:
+            raise LookupError("Couldn't find software %s in the database")
+        software = self.software[prefix]
+        soft_list = []
+        if 'dependent_software' in software:
+            for dep in software['dependent_software']:
+                dep_soft_list = self.get_deps_recursive(dep.get_prefix())
+                for dep_soft in dep_soft_list:
+                    if dep_soft not in soft_list:
+                        soft_list.append(dep_soft)
+        soft_list.append(software)
+        return soft_list
+
     def build_commands_recursive(self, prefix):
         '''Inner recursive function which needs reversing in an outer function.'''
         if prefix not in self.software:
             raise LookupError("Couldn't find software %s in the database")
-        software = self.software[prefix]
+        soft_list = self.get_deps_recursive(prefix)
         commands_array = []
-        if 'dependent_software' in software:
-            for dep in software['dependent_software']:
-                dep_commands_array = self.build_commands_recursive(dep.get_prefix())
-                commands_array.extend(dep_commands_array)
-        commands_array.extend(software['build_commands'])
+        for soft in soft_list:
+            commands_array.extend(self.software[soft.get_prefix()]['build_commands'])
         return commands_array
 
     def lookup(self, software_name, software_version):
@@ -60,7 +72,7 @@ class SoftJson(object):
             raise LookupError("Couldn't find software %s in the database")
         return self.software[prefix].get_comments()
 
-    def __init__(self, json_files=None):
+    def __init__(self, json_files=None, distant_url=False):
         '''Initialize with or without files.'''
         self.software = {}
         self.defaults = {}
@@ -70,4 +82,4 @@ class SoftJson(object):
             if not isinstance(json_files, list):
                 raise TypeError("json_files should be list of strings of filenames or a string of a filename")
             for json_file in json_files:
-                self.add_json_file(json_file)
+                self.add_json_file(json_file, distant=distant_url)
