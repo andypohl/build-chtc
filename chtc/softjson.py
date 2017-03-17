@@ -29,8 +29,13 @@ class SoftJson(object):
         if 'dependent_software' in software:
             for dep in software['dependent_software']:
                 dep_soft_list = self.get_deps_recursive(dep.get_prefix())
+                # dependencies of dependencies might be asking for a different version
+                # so we need to account for that.  Building two different versions of a 
+                # software is even worse than building one version twice.
+                versionless_list = [d['software'] for d in dep_soft_list]
                 for dep_soft in dep_soft_list:
-                    if dep_soft not in soft_list:
+                    vl = dep_soft['software']
+                    if vl not in versionless_list:
                         soft_list.append(dep_soft)
         soft_list.append(software)
         return soft_list
