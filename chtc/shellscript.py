@@ -22,7 +22,6 @@ cd $SOFTWAREDIR/src
 #### BUILDING PHASE
 
 {{|BUILD_COMMANDS|}}
-
 #### END OF BUILDING PHASE
 
 # cleanup
