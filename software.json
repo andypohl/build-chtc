@@ -7,19 +7,21 @@
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/bzip2-1.0.6.tar.gz",
         "Build_Commands": [
             "tar xfz bzip2-1.0.6.tar.gz",
-            "pushd bzip2-1.0.6/",
+            "cd bzip2-1.0.6/",
             "sed -i 's/CFLAGS=/CFLAGS=-fPIC /' Makefile",
             "make",
             "make -f Makefile-libbz2_so",
             "make install PREFIX=../..",
             "cp -vp *.so.* ../../lib/",
+            "pushd .",
             "cd ../../bin/",
             "rm -f bzcmp bzegrep bzfgrep bzless",
             "if [ ! -e bzcmp ]; then ln -s bzdiff bzcmp; fi",
             "if [ ! -e bzegrep ]; then ln -s bzgrep bzegrep; fi",
             "if [ ! -e bzfgrep ]; then ln -s bzgrep bzfgrep; fi",
             "if [ ! -e bzmore ]; then ln -s bzless bzmore; fi",
-            "popd"
+            "popd",
+            "cd ../"
         ]
     },
     {
@@ -179,6 +181,20 @@
         ]
     },
     {
+        "Software": "ncurses",
+        "Version": "6.0",
+        "Release_Date": "2015-08-09",
+        "URL": "ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz",
+        "Build_Commands": [
+            "tar xfz ncurses-6.0.tar.gz",
+            "cd ncurses-6.0/",
+            "./configure --prefix=$SOFTWAREDIR --with-libtool --with-shared --with-pkg-config=$SOFTWAREDIR/lib/pkgconfig --enable-pc-files --without-manpages",
+            "make",
+            "make install",
+            "cd ../"
+        ]
+    },
+    {
         "Software": "openssl",
         "Version": "1.0.2h",
         "Release_Date": "2016-05-03",
@@ -188,28 +204,34 @@
         "Build_Commands": [
             "tar xfz openssl-1.0.2h.tar.gz",
             "cd openssl-1.0.2h/",
-            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR shared",
+            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
             "make depend",
             "make",
-            "make install",
+            "make install_sw",
             "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"}
         ]
     },
     {
         "Software": "openssl",
         "Version": "1.1.0d",
-        "Release_Date": "2016-05-03",
+        "Release_Date": "2017-01-26",
         "URL": "https://www.openssl.org/source/old/1.1.0/openssl-1.1.0d.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/openssl-1.1.0d.tar.gz",
         "Comments": "Makes a $SOFTWAREDIR/certs directory for a CA bundle",
         "Build_Commands": [
             "tar xfz openssl-1.1.0d.tar.gz",
             "cd openssl-1.1.0d/",
-            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR shared",
+            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
             "make depend",
             "make",
-            "make install",
+            "make install_sw",
             "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"}
         ]
     },
     {
@@ -221,11 +243,16 @@
         "Build_Commands": [
             "tar xfz pcre-8.39.tar.gz",
             "cd pcre-8.39/",
-            "./configure --prefix=$SOFTWAREDIR --enable-utf8",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --enable-utf8 --enable-pcregrep-libz --enable-pcretest-libreadline --enable-pcregrep-libbz2",
             "make",
             "make install",
             "cd ../"
-        ]        
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "readline", "Version": "7.0"}
+        ]
     },
     {
         "Software": "pcre",
@@ -236,11 +263,16 @@
         "Build_Commands": [
             "tar xfz pcre-8.40.tar.gz",
             "cd pcre-8.40/",
-            "./configure --prefix=$SOFTWAREDIR --enable-utf8",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --enable-utf8 --enable-pcregrep-libz --enable-pcretest-libreadline --enable-pcregrep-libbz2",
             "make",
             "make install",
             "cd ../"
-        ]        
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "readline", "Version": "7.0"}
+        ]
     },
     {
         "Software": "readline",
@@ -265,11 +297,14 @@
         "Build_Commands": [
             "tar xfz readline-7.0.tar.gz",
             "cd readline-7.0/",
-            "./configure --prefix=$SOFTWAREDIR",
+            "./configure  --prefix=$SOFTWAREDIR CFLAGS=\"-I$SOFTWAREDIR/include/ncurses\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --with-curses",
             "make",
             "make install",
             "cd ../"
-        ]        
+        ],
+        "Dependent_Software": [
+            {"Software": "ncurses", "Version": "6.0"}
+        ]
     },
     {
         "Software": "xz",
@@ -319,7 +354,7 @@
     {
         "Software": "zlib",
         "Version": "1.2.11",
-        "Release_Date": "2015-09-29",
+        "Release_Date": "2017-01-15",
         "URL": "http://www.zlib.net/fossils/zlib-1.2.11.tar.gz",
         "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/zlib-1.2.11.tar.gz",
         "Build_Commands": [
@@ -333,65 +368,6 @@
     },
     {
         "Software": "R",
-        "Version": "3.3.1",
-        "Release_Date": "2016-06-21",
-        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.1.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.1.tar.gz",
-        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
-        "Build_Commands": [
-            "tar xfz R-3.3.1.tar.gz",
-            "cd R-3.3.1/",
-            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
-            "make",
-            "make install",
-            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
-            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
-            "cd ../"
-        ],
-        "Dependent_Software": [
-            {"Software": "pcre", "Version": "8.39"},
-            {"Software": "readline", "Version": "6.3"},
-            {"Software": "zlib", "Version": "1.2.8"},
-            {"Software": "openssl", "Version": "1.0.2h"},
-            {"Software": "xz", "Version": "5.2.2"},
-            {"Software": "bzip", "Version": "1.0.6"},
-            {"Software": "curl", "Version": "7.49.1"},
-            {"Software": "libjpeg", "Version": "v9b"},
-            {"Software": "libpng", "Version": "1.6.23"},
-            {"Software": "libxml2", "Version": "2.9.4"}
-        ]
-    },
-    {
-        "Software": "R",
-        "Version": "3.3.2",
-        "Release_Date": "2016-10-26",
-        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.2.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.3.2.tar.gz",
-        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
-        "Build_Commands": [
-            "tar xfz R-3.3.2.tar.gz",
-            "cd R-3.3.2/",
-            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
-            "make",
-            "make install",
-            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
-            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
-            "cd ../"
-        ],
-        "Dependent_Software": [
-            {"Software": "pcre", "Version": "8.39"},
-            {"Software": "readline", "Version": "7.0"},
-            {"Software": "zlib", "Version": "1.2.8"},
-            {"Software": "xz", "Version": "5.2.2"},
-            {"Software": "bzip", "Version": "1.0.6"},
-            {"Software": "curl", "Version": "7.50.3"},
-            {"Software": "libjpeg", "Version": "v9b"},
-            {"Software": "libpng", "Version": "1.6.26"},
-            {"Software": "libxml2", "Version": "2.9.4"}
-        ]
-    },
-    {
-        "Software": "R",
         "Version": "3.3.3",
         "Release_Date": "2017-03-06",
         "URL": "https://cran.rstudio.com/src/base/R-3/R-3.3.3.tar.gz",
@@ -400,7 +376,7 @@
         "Build_Commands": [
             "tar xfz R-3.3.3.tar.gz",
             "cd R-3.3.3/",
-            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
             "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
@@ -408,15 +384,14 @@
             "cd ../"
         ],
         "Dependent_Software": [
-            {"Software": "pcre", "Version": "8.40"},
             {"Software": "readline", "Version": "7.0"},
             {"Software": "zlib", "Version": "1.2.11"},
-            {"Software": "openssl", "Version": "1.1.0d"},
             {"Software": "xz", "Version": "5.2.3"},
             {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "openssl", "Version": "1.1.0d"},
             {"Software": "curl", "Version": "7.53.1"},
-            {"Software": "libjpeg", "Version": "v9b"},
-            {"Software": "libpng", "Version": "1.6.28"}
+            {"Software": "pcre", "Version": "8.40"},
+            {"Software": "libjpeg", "Version": "v9b"}
         ]
     }
 ]
