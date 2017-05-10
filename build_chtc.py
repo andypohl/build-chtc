@@ -71,7 +71,7 @@ def do_one_build(my_software, prefix, substitutions, is_interactive, other_optio
     testing = 'testing' in other_options
     should_exit = 'should_exit' in other_options or testing
     my_shell_script = chtc.ShellScript(prefix, substitutions, should_exit)
-    my_commands = my_software.build_commands_recursive(prefix)
+    my_commands = my_software.commands_cat(prefix)
     my_shell_script.add_lines(my_commands)
     if 'bosco' in other_options:
         # Overrides --interactive
