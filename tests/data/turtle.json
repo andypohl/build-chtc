@@ -1,0 +1,81 @@
+[
+    {
+        "Software": "bird",
+        "Version": "1.0",
+        "URL": "http://example.com/bird-1.0.tar.gz",
+        "Build_Commands":[
+            "tar xvf bird-1.0.tar.gz"
+        ],
+        "Dependent_Software":[
+            {"Software": "dog", "Version": "3.0"}
+        ] 
+    },
+    {
+        "Software": "bird",
+        "Version": "1.2",
+        "URL": "http://example.com/bird-1.2.tar.gz",
+        "Build_Commands":[
+            "tar xvf bird-1.2.tar.gz"
+        ],
+        "Dependent_Software":[
+            {"Software": "dog", "Version": "4.0"}
+        ] 
+    },
+    {
+        "Software": "fox",
+        "Version": "3.2",
+        "URL": "http://example.com/fox-3.2.tar.gz",
+        "Build_Commands":[
+            "tar xvf fox-3.2.tar.gz"
+        ]   
+    },
+    {
+        "Software": "dog",
+        "Version": "3.0",
+        "URL": "http://example.com/dog-3.0.tar.gz",
+        "Build_Commands":[
+            "tar xvf dog-3.0.tar.gz"
+        ]   
+    },
+    {
+        "Software": "dog",
+        "Version": "4.0",
+        "URL": "http://example.com/dog-4.0.tar.gz",
+        "Build_Commands":[
+            "tar xvf dog-4.0.tar.gz"
+        ]   
+    },
+    {
+        "Software": "cow",
+        "Version": "1.7",
+        "URL": "http://example.com/cow-1.7.tar.gz",
+        "Build_Commands":[
+            "tar xvf cow-1.7.tar.gz"
+        ],
+        "Dependent_Software":[
+            {"Software": "bird", "Version": "1.0"},
+            {"Software": "cat", "Version": "2.1"}
+        ]
+    },
+    {
+        "Software": "cat",
+        "Version": "2.1",
+        "URL": "http://example.com/cat-2.1.tar.gz",
+        "Build_Commands":[
+            "tar xvf cat-2.1.tar.gz"
+        ]   
+    },
+    {
+        "Software": "turtle",
+        "Version": "1.0",
+        "URL": "http://example.com/turtle-1.0.tar.gz",
+        "Build_Commands":[
+            "tar xvf turtle-1.0.tar.gz"
+        ],
+        "Dependent_Software":[
+            {"Software": "bird", "Version": "1.2"},
+            {"Software": "fox", "Version": "3.2"},
+            {"Software": "cow", "Version": "1.7"}            
+        ]
+    }
+]
