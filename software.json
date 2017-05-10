@@ -25,64 +25,6 @@
         ]
     },
     {
-        "Software": "libwww-perl",
-        "Version": "6.15",
-        "Release_Date": "2016-05-30",
-        "URL": "http://www.cpan.org/modules/by-module/LWP/libwww-perl-6.15.tar.gz",
-        "Build_Commands": [
-            "tar xfz libwww-perl-6.15.tar.gz",
-            "cd libwww-perl-6.15/",
-            "perl Makefile.PL PREFIX=$SOFTWAREDIR --no-programs",
-            "make",
-            "make install"
-        ]        
-    },
-    {
-        "Software": "curl",
-        "Version": "7.49.1",
-        "Release_Date": "2016-05-30",
-        "URL": "http://curl.askapache.com/download/curl-7.49.1.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/curl-7.49.1.tar.gz",
-        "Comments": "Set CURLOPT_CAINFO environment var to $SOFTWAREDIR/certs/ca-bundle.crt",
-        "Build_Commands": [
-            "tar xfz curl-7.49.1.tar.gz",
-            "cd curl-7.49.1/",
-            "PKG_CONFIG_PATH=$SOFTWAREDIR/lib/pkgconfig ./configure --prefix=$SOFTWAREDIR",
-            "make",
-            "make install",
-            "make ca-bundle",
-            "mkdir -p $SOFTWAREDIR/certs",
-            "cp -vp lib/ca-bundle.crt $SOFTWAREDIR/certs",
-            "cd ../"
-        ],
-        "Dependent_Software": [
-            {"Software": "libwww-perl", "Version": "6.15"}
-        ]
-    },
-    {
-        "Software": "curl",
-        "Version": "7.50.3",
-        "Release_Date": "2016-09-14",
-        "URL": "http://curl.askapache.com/download/curl-7.50.3.tar.gz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/curl-7.50.3.tar.gz",
-        "Comments": "Set CURLOPT_CAINFO environment var to $SOFTWAREDIR/certs/ca-bundle.crt",
-        "Build_Commands": [
-            "tar xfz curl-7.50.3.tar.gz",
-            "cd curl-7.50.3/",
-            "PKG_CONFIG_PATH=$SOFTWAREDIR/lib/pkgconfig ./configure --prefix=$SOFTWAREDIR",
-            "make",
-            "make install",
-            "make ca-bundle",
-            "mkdir -p $SOFTWAREDIR/certs",
-            "cp -vp lib/ca-bundle.crt $SOFTWAREDIR/certs",
-            "cd ../"
-        ],
-        "Dependent_Software": [
-            {"Software": "zlib", "Version": "1.2.8"},
-            {"Software": "openssl", "Version": "1.0.2h"}
-        ]
-    },
-    {
         "Software": "curl",
         "Version": "7.53.1",
         "Release_Date": "2017-02-24",
