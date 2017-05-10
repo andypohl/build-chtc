@@ -1,7 +1,6 @@
 '''Tests for that dictionary class I found on on the internet.'''
 
-#import unittest2 as unittest
-import unittest
+import unittest2 as unittest
 import sys
 from chtc import ShellScript
 

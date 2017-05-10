@@ -1,7 +1,6 @@
 '''Tests for that OrderedDict Python 2.6 backport I found on on the internet.'''
 
 import unittest2 as unittest
-#import unittest
 import sys
 from chtc import OrderedDict
 

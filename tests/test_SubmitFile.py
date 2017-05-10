@@ -1,7 +1,6 @@
 '''A couple tests for SubmitFile class.'''
 
 import unittest2 as unittest
-#import unittest
 import sys
 from chtc import SubmitFile
 

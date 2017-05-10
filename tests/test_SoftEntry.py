@@ -1,7 +1,6 @@
 '''SoftEntry tests.  Not using test data files.'''
 
 import unittest2 as unittest
-#import unittest
 import sys
 from datetime import date
 from chtc import SoftEntry
