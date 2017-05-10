@@ -25,6 +25,19 @@
         ]
     },
     {
+        "Software": "libwww-perl",
+        "Version": "6.15",
+        "Release_Date": "2016-05-30",
+        "URL": "http://www.cpan.org/modules/by-module/LWP/libwww-perl-6.15.tar.gz",
+        "Build_Commands": [
+            "tar xfz libwww-perl-6.15.tar.gz",
+            "cd libwww-perl-6.15/",
+            "perl Makefile.PL PREFIX=$SOFTWAREDIR --no-programs",
+            "make",
+            "make install"
+        ]        
+    },
+    {
         "Software": "curl",
         "Version": "7.49.1",
         "Release_Date": "2016-05-30",
@@ -41,6 +54,9 @@
             "mkdir -p $SOFTWAREDIR/certs",
             "cp -vp lib/ca-bundle.crt $SOFTWAREDIR/certs",
             "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "libwww-perl", "Version": "6.15"}
         ]
     },
     {
@@ -87,6 +103,29 @@
         "Dependent_Software": [
             {"Software": "zlib", "Version": "1.2.11"},
             {"Software": "openssl", "Version": "1.1.0d"}
+        ]
+    },
+    {
+        "Software": "curl",
+        "Version": "7.54.0",
+        "Release_Date": "2017-04-19",
+        "URL": "http://curl.askapache.com/download/curl-7.54.0.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/curl-7.54.0.tar.gz",
+        "Comments": "Set CURLOPT_CAINFO environment var to $SOFTWAREDIR/certs/ca-bundle.crt",
+        "Build_Commands": [
+            "tar xfz curl-7.54.0.tar.gz",
+            "cd curl-7.54.0/",
+            "PKG_CONFIG_PATH=$SOFTWAREDIR/lib/pkgconfig ./configure --prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "make ca-bundle",
+            "mkdir -p $SOFTWAREDIR/certs",
+            "cp -vp lib/ca-bundle.crt $SOFTWAREDIR/certs",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"},
+            {"Software": "openssl", "Version": "1.1.0e"}
         ]
     },
     {
@@ -224,6 +263,26 @@
         "Build_Commands": [
             "tar xfz openssl-1.1.0d.tar.gz",
             "cd openssl-1.1.0d/",
+            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
+            "make depend",
+            "make",
+            "make install_sw",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"}
+        ]
+    },
+    {
+        "Software": "openssl",
+        "Version": "1.1.0e",
+        "Release_Date": "2017-02-16",
+        "URL": "https://www.openssl.org/source/openssl-1.1.0e.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/openssl-1.1.0e.tar.gz",
+        "Comments": "Makes a $SOFTWAREDIR/certs directory for a CA bundle",
+        "Build_Commands": [
+            "tar xfz openssl-1.1.0e.tar.gz",
+            "cd openssl-1.1.0e/",
             "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
             "make depend",
             "make",
@@ -390,6 +449,34 @@
             {"Software": "bzip", "Version": "1.0.6"},
             {"Software": "openssl", "Version": "1.1.0d"},
             {"Software": "curl", "Version": "7.53.1"},
+            {"Software": "pcre", "Version": "8.40"},
+            {"Software": "libjpeg", "Version": "v9b"}
+        ]
+    },
+    {
+        "Software": "R",
+        "Version": "3.4.0",
+        "Release_Date": "2017-04-21",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.4.0.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.4.0.tar.gz",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Build_Commands": [
+            "tar xfz R-3.4.0.tar.gz",
+            "cd R-3.4.0/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "make",
+            "make install",
+            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "zlib", "Version": "1.2.11"},
+            {"Software": "xz", "Version": "5.2.3"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "openssl", "Version": "1.1.0e"},
+            {"Software": "curl", "Version": "7.54.0"},
             {"Software": "pcre", "Version": "8.40"},
             {"Software": "libjpeg", "Version": "v9b"}
         ]
