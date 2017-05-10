@@ -95,9 +95,11 @@ class ShellScript(object):
         for line in lines:
             self.add_line(line, substitutions)
 
-    def write(self, comments=True):
+    def write(self, comments=True, testing=False):
         """Write this to a file called "prefix.sh"."""
         script_name = self.prefix + '.sh'
+        if testing:
+            script_name = 'htcondor-tests/testing-' + script_name
         try:
             with open(script_name, 'w') as script_fd:
                 for line in self.catted(comments):

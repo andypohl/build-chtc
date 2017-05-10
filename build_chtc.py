@@ -8,6 +8,7 @@ This will produce an HTCondor submit file and a corresponding script file.
 Usage: build_chtc.py <software> [-s <version_number>] [-i] [--json <file> --json <file>] [-r <VAR=value> -r <VAR=value> -x <VAR=value> -x <VAR=value>]
        build_chtc.py -h | --help
        build_chtc.py -l | --list-software
+       build_chtc.py --check <software_list>
 
 Options:
    -l, --list-software            Show a list of software names and versions input
@@ -27,6 +28,8 @@ Options:
                                   use the option multiple times e.g. "-r VAR1=val1 -r VAR2=val2".
     -x <VAR=value>, --other <VAR=value>
                                   Other options not mentioned in this help.
+    --check <software_list>       Check a given comma-separated list of software or "all" to build
+                                  a DAG for all the software.
                                   
 """
 
@@ -64,38 +67,62 @@ def list_to_dict(other_list):
         other_dict[tup[0]] = tup[1]
     return other_dict
 
+def do_one_build(my_software, prefix, substitutions, is_interactive, other_options):
+    testing = 'testing' in other_options
+    should_exit = 'should_exit' in other_options or testing
+    my_shell_script = chtc.ShellScript(prefix, substitutions, should_exit)
+    my_commands = my_software.build_commands_recursive(prefix)
+    my_shell_script.add_lines(my_commands)
+    if 'bosco' in other_options:
+        # Overrides --interactive
+        my_submit_file = chtc.BoscoSubmitFile(prefix, other_options['bosco'])
+    elif 'testing' in other_options:
+        my_submit_file = chtc.TestingSubmitFile(prefix)
+    elif is_interactive:
+        my_submit_file = chtc.InteractiveSubmitFile(prefix)
+    else:
+        my_submit_file = chtc.SubmitFile(prefix)
+    my_shell_script.write(testing=testing)
+    my_submit_file.write()
+    comments = my_software.get_comments(prefix)
+    if comments and not testing:
+        print comments
+
 def do_make_build(arguments):
     """The 'real' main(). Option logic here."""
     #pprint(arguments)
     json_filenames = arguments['--json']
     other_options = list_to_dict(arguments['--other'])
-    distant = False
-    if 'distant_url' in other_options:
-        distant = True
+    distant = 'distant_url' in other_options or arguments['--check']
+    testing = 'testing' in other_options
     my_software = chtc.SoftJson(json_filenames, distant_url=distant)
     if arguments['--list-software']:
         print '--list-software option not implemented yet'
+    elif arguments['--check']:
+        other_options['testing'] = True
+        other_options['distant_url'] = True
+        software_list = arguments['--check']
+        if software_list == 'all':
+            software_list = my_software.software.keys()
+        else:
+            # Check this given list
+            prefixes = software_list.split(',')
+            for prefix in prefixes:
+                if prefix not in my_software.software:
+                    raise KeyError("Couldn't find %s in software JSON" %(prefix))
+            software_list = prefixes
+        for prefix in software_list:
+            required_subs = my_software.required_substitutions(prefix)
+            substitutions = get_substitutions(arguments['--substitute'], required_subs)
+            do_one_build(my_software, prefix, substitutions, False, other_options)
+        dag = chtc.GroupDag(my_software.subset(software_list))
+        dag.write('htcondor-tests/testing.dag')
     else:
         prefix = my_software.lookup(arguments['<software>'], arguments['--software-version'])
         required_subs = my_software.required_substitutions(prefix)
-        should_exit = 'should_exit' in other_options
         substitutions = get_substitutions(arguments['--substitute'], required_subs)
-        my_shell_script = chtc.ShellScript(prefix, substitutions, should_exit)
-        my_commands = my_software.build_commands_recursive(prefix)
-        my_shell_script.add_lines(my_commands)
-        if 'bosco' in other_options:
-            # Overrides --interactive
-            my_submit_file = chtc.BoscoSubmitFile(prefix, other_options['bosco'])
-        elif arguments['--interactive']:
-            my_submit_file = chtc.InteractiveSubmitFile(prefix)
-        else:
-            my_submit_file = chtc.SubmitFile(prefix)
-        my_shell_script.write()
-        my_submit_file.write()
-        comments = my_software.get_comments(prefix)
-        if comments:
-            print comments
+        do_one_build(my_software, prefix, substitutions, arguments['--interactive'], other_options)
 
 if __name__ == '__main__':
-    ARGS = chtc.docopt(__doc__, version='build_r.py v0.1 -- 2017-02-17 (github.com/andypohl/building-r)')
+    ARGS = chtc.docopt(__doc__, version='build_chtc.py v0.1 -- 2017-02-17 (github.com/andypohl/build-chtc)')
     do_make_build(ARGS)

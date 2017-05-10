@@ -21,6 +21,7 @@ class SubmitFile(OrderedDict):
         self['grid_resource'] = None
         self['remote_universe'] = None
         self['executable'] = self.script_name
+        self['arguments'] = None
         self['log'] = prefix + '.log'
         self['error'] = prefix + '.err'
         self['output'] = prefix + '.out'
@@ -34,6 +35,7 @@ class SubmitFile(OrderedDict):
         self['request_memory'] = '500MB'
         self['queue'] = ''
         self._locked = True
+        self.testing = False
 
     def __str__(self):
         '''Convert to string.'''
@@ -79,6 +81,22 @@ class BoscoSubmitFile(SubmitFile):
         self['universe'] = "grid"
         self['remote_universe'] = "vanilla"
         self['grid_resource'] = "batch condor " + ssh_submit
+
+class TestingSubmitFile(SubmitFile):
+    # with the wrapper
+    def __init__(self, prefix):
+        SubmitFile.__init__(self, prefix)
+        self.script_name = 'testing-' + prefix + '.sh'
+        verdict_file = 'testing-' + prefix + '.verdict.txt'
+        self['executable'] = 'wrapper-testing.sh'
+        self['arguments'] = self.script_name + ' ' + verdict_file
+        self['log'] = 'testing-' + prefix + '.log'
+        self['error'] = 'testing-' + prefix + '.err'
+        self['output'] = 'testing-' + prefix + '.out'
+        self['transfer_input_files'] = [self.script_name]
+        self['transfer_output_files'] = [verdict_file]
+        self.filename = 'htcondor-tests/testing-' + self.filename
+        self.testing = True
 
 ##### Command-line testing (not in test suite)
 def __run_tests():

@@ -1,3 +1,4 @@
+t
 *.pyc
 *.sh
 *.submit
@@ -5,3 +6,5 @@
 .DS_Store
 .bash_history
 unittest2
+htcondor-tests
+!htcondor-tests/wrapper-testing.sh
