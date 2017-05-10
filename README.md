@@ -16,7 +16,7 @@ A few minutes after running `condor_submit`, you should have your tarball.
    * This script builds the software only.  It does not provide you with another submit file or script to run that software through HTCondor.  Example scripts and pipelines will be provided through documentation, Gists, blog posts, etc.  Hints about where to go to find relevant examples should be found in the "Comments" field of a software entry in the JSON file.  
 
 ## How do I use this?
-Before using the program, study the [`software.json` file](https://github.com/andypohl/build-chtc/blob/master/software.json) to get a sense of the structure and how different entries are linked together.  Then, log into an HTCondor submit node, clone this repository, and run the program as you need to:
+Before using the program, look at the [`software.json` file](https://github.com/andypohl/build-chtc/blob/master/software.json) to get a sense of the structure and how different entries are linked together.  Then, log into an HTCondor submit node, clone this repository, and run the program as you need to:
 
 ```
 [me@laptop:~$ ssh submit
