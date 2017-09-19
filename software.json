@@ -425,13 +425,14 @@
     },
     {
         "Software": "lapack",
-        "Version": "3.7.0",
-        "Release_Date": "2016-12-24",
-        "URL": "http://www.netlib.org/lapack/lapack-3.7.0.tgz",
-        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/lapack-3.7.0.tgz",
+        "Version": "3.7.1",
+        "Release_Date": "2017-06-25",
+        "URL": "http://www.netlib.org/lapack/lapack-3.7.1.tgz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/lapack-3.7.1.tgz",
         "Build_Commands": [
-            "tar xfz lapack-3.7.0.tgz",
-            "cd lapack-3.7.0/",
+            "mkdir -p $SOFTWAREDIR/lib",
+            "tar xfz lapack-3.7.1.tgz",
+            "cd lapack-3.7.1/",
             "cat > make.inc << \"_EOF_\"",
             "SHELL = /bin/sh",
             "FORTRAN  = gfortran",
@@ -454,8 +455,9 @@
             "make lapacklib",
             "cp BLAS/SRC/libblas.so $SOFTWAREDIR/lib/",
             "ln -s $SOFTWAREDIR/lib/libblas.so $SOFTWAREDIR/lib/libblas.so.3",
-            "cp SRC/liblapack.so $SOFTWAREDIR/lib/",
-            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3"
+            "cp liblapack.so $SOFTWAREDIR/lib/",
+            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3",
+            "cd ../"
         ]
     },
     {
