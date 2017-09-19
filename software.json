@@ -422,5 +422,68 @@
             {"Software": "pcre", "Version": "8.40"},
             {"Software": "libjpeg", "Version": "v9b"}
         ]
+    },
+    {
+        "Software": "lapack",
+        "Version": "3.7.0",
+        "Release_Date": "2016-12-24",
+        "URL": "http://www.netlib.org/lapack/lapack-3.7.0.tgz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/lapack-3.7.0.tgz",
+        "Build_Commands": [
+            "tar xfz lapack-3.7.0.tgz",
+            "cd lapack-3.7.0/",
+            "cat > make.inc << \"_EOF_\"",
+            "SHELL = /bin/sh",
+            "FORTRAN  = gfortran",
+            "OPTS     = -shared -O2 -mtune=core2 -fPIC",
+            "DRVOPTS  = $(OPTS)",
+            "NOOPT    = -shared -O0 -fPIC",
+            "LOADER   = gfortran",
+            "LOADOPTS = -shared -O2 -mtune=core2 -fPIC",
+            "TIMER = INT_ETIME",
+            "ARCH     = ar",
+            "ARCHFLAGS= cr",
+            "RANLIB   = ranlib",
+            "BLASLIB      = libblas.so",
+            "LAPACKLIB    = liblapack.so",
+            "TMGLIB       = tmglib.so",
+            "EIGSRCLIB    = eigsrc.so",
+            "LINSRCLIB    = linsrc.so",
+            "_EOF_",
+            "make blaslib",
+            "make lapacklib",
+            "cp BLAS/SRC/libblas.so $SOFTWAREDIR/lib/",
+            "ln -s $SOFTWAREDIR/lib/libblas.so $SOFTWAREDIR/lib/libblas.so.3",
+            "cp SRC/liblapack.so $SOFTWAREDIR/lib/",
+            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3"
+        ]
+    },
+    {
+        "Software": "R",
+        "Version": "3.4.1",
+        "Release_Date": "2017-06-30",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.4.1.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.4.1.tar.gz",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Build_Commands": [
+            "tar xfz R-3.4.1.tar.gz",
+            "cd R-3.4.1/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "make",
+            "make install",
+            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "zlib", "Version": "1.2.11"},
+            {"Software": "xz", "Version": "5.2.3"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "openssl", "Version": "1.1.0e"},
+            {"Software": "curl", "Version": "7.54.0"},
+            {"Software": "pcre", "Version": "8.40"},
+            {"Software": "libjpeg", "Version": "v9b"}
+        ]
     }
 ]
