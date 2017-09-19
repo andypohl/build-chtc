@@ -485,7 +485,8 @@
             {"Software": "openssl", "Version": "1.1.0e"},
             {"Software": "curl", "Version": "7.54.0"},
             {"Software": "pcre", "Version": "8.40"},
-            {"Software": "libjpeg", "Version": "v9b"}
+            {"Software": "libjpeg", "Version": "v9b"},
+            {"Software": "lapack", "Version": "3.7.1"}
         ]
     }
 ]
