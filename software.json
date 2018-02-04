@@ -517,9 +517,11 @@
             "make blaslib",
             "make lapacklib",
             "cp BLAS/SRC/libblas.so $SOFTWAREDIR/lib/",
-            "ln -s $SOFTWAREDIR/lib/libblas.so $SOFTWAREDIR/lib/libblas.so.3",
             "cp liblapack.so $SOFTWAREDIR/lib/",
-            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3",
+            "pushd $SOFTWAREDIR/lib",
+            "ln -s libblas.so libblas.so.3",
+            "ln -s liblapack.so liblapack.so.3",
+            "popd",
             "cd ../"
         ]
     },
@@ -554,9 +556,11 @@
             "make blaslib",
             "make lapacklib",
             "cp BLAS/SRC/libblas.so $SOFTWAREDIR/lib/",
-            "ln -s $SOFTWAREDIR/lib/libblas.so $SOFTWAREDIR/lib/libblas.so.3",
             "cp liblapack.so $SOFTWAREDIR/lib/",
-            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3",
+            "pushd $SOFTWAREDIR/lib",
+            "ln -s libblas.so libblas.so.3",
+            "ln -s liblapack.so liblapack.so.3",
+            "popd",
             "cd ../"
         ]
     },
