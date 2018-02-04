@@ -10,6 +10,9 @@ BUILD_LINES = """\
 
 # Set up environment:
 SOFTWAREDIR=$_CONDOR_SCRATCH_DIR/software
+if [ -z $_CONDOR_SCRATCH_DIR ]; then 
+    SOFTWAREDIR=$(pwd -P)/software
+fi
 export LD_LIBRARY_PATH=$SOFTWAREDIR/lib
 export PATH=$SOFTWAREDIR/bin:$PATH
 

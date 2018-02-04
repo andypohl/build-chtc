@@ -71,6 +71,29 @@
         ]
     },
     {
+        "Software": "curl",
+        "Version": "7.57.0",
+        "Release_Date": "2017-11-29",
+        "URL": "https://curl.haxx.se/download/curl-7.57.0.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/curl-7.57.0.tar.gz",
+        "Comments": "Set CURLOPT_CAINFO environment var to $SOFTWAREDIR/certs/ca-bundle.crt",
+        "Build_Commands": [
+            "tar xfz curl-7.57.0.tar.gz",
+            "cd curl-7.57.0/",
+            "PKG_CONFIG_PATH=$SOFTWAREDIR/lib/pkgconfig ./configure --prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "make ca-bundle",
+            "mkdir -p $SOFTWAREDIR/certs",
+            "cp -vp lib/ca-bundle.crt $SOFTWAREDIR/certs",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"},
+            {"Software": "openssl", "Version": "1.1.0f"}
+        ]
+    },
+    {
         "Software": "libjpeg",
         "Version": "v9b",
         "Release_Date": "2016-01-17",
@@ -236,6 +259,26 @@
         ]
     },
     {
+        "Software": "openssl",
+        "Version": "1.1.0f",
+        "Release_Date": "2017-05-25",
+        "URL": "https://www.openssl.org/source/old/1.1.0/openssl-1.1.0f.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/openssl-1.1.0f.tar.gz",
+        "Comments": "Makes a $SOFTWAREDIR/certs directory for a CA bundle",
+        "Build_Commands": [
+            "tar xfz openssl-1.1.0f.tar.gz",
+            "cd openssl-1.1.0f/",
+            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
+            "make depend",
+            "make",
+            "make install_sw",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"}
+        ]
+    },
+    {
         "Software": "pcre",
         "Version": "8.39",
         "Release_Date": "2016-06-14",
@@ -271,6 +314,26 @@
         ],
         "Dependent_Software": [
             {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "readline", "Version": "7.0"}
+        ]
+    },
+    {
+        "Software": "pcre",
+        "Version": "8.41",
+        "Release_Date": "2017-07-05",
+        "URL": "http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.41.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/pcre-8.41.tar.gz",
+        "Build_Commands": [
+            "tar xfz pcre-8.41.tar.gz",
+            "cd pcre-8.41/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --enable-utf8 --enable-pcregrep-libz --enable-pcretest-libreadline --enable-pcregrep-libbz2",
+            "make",
+            "make install",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.11"},
             {"Software": "bzip", "Version": "1.0.6"},
             {"Software": "readline", "Version": "7.0"}
         ]
@@ -461,6 +524,43 @@
         ]
     },
     {
+        "Software": "lapack",
+        "Version": "3.8.0",
+        "Release_Date": "2017-11-12",
+        "URL": "http://www.netlib.org/lapack/lapack-3.8.0.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/lapack-3.8.0.tar.gz",
+        "Build_Commands": [
+            "mkdir -p $SOFTWAREDIR/lib",
+            "tar xfz lapack-3.8.0.tar.gz",
+            "cd lapack-3.8.0/",
+            "cat > make.inc << \"_EOF_\"",
+            "SHELL = /bin/sh",
+            "FORTRAN  = gfortran",
+            "OPTS     = -shared -O2 -mtune=core2 -fPIC",
+            "DRVOPTS  = $(OPTS)",
+            "NOOPT    = -shared -O0 -fPIC",
+            "LOADER   = gfortran",
+            "LOADOPTS = -shared -O2 -mtune=core2 -fPIC",
+            "TIMER = INT_ETIME",
+            "ARCH     = ar",
+            "ARCHFLAGS= cr",
+            "RANLIB   = ranlib",
+            "BLASLIB      = libblas.so",
+            "LAPACKLIB    = liblapack.so",
+            "TMGLIB       = tmglib.so",
+            "EIGSRCLIB    = eigsrc.so",
+            "LINSRCLIB    = linsrc.so",
+            "_EOF_",
+            "make blaslib",
+            "make lapacklib",
+            "cp BLAS/SRC/libblas.so $SOFTWAREDIR/lib/",
+            "ln -s $SOFTWAREDIR/lib/libblas.so $SOFTWAREDIR/lib/libblas.so.3",
+            "cp liblapack.so $SOFTWAREDIR/lib/",
+            "ln -s $SOFTWAREDIR/lib/liblapack.so $SOFTWAREDIR/lib/liblapack.so.3",
+            "cd ../"
+        ]
+    },
+    {
         "Software": "R",
         "Version": "3.4.1",
         "Release_Date": "2017-06-30",
@@ -484,6 +584,35 @@
             {"Software": "bzip", "Version": "1.0.6"},
             {"Software": "openssl", "Version": "1.1.0e"},
             {"Software": "curl", "Version": "7.54.0"},
+            {"Software": "pcre", "Version": "8.40"},
+            {"Software": "libjpeg", "Version": "v9b"},
+            {"Software": "lapack", "Version": "3.7.1"}
+        ]
+    },
+    {
+        "Software": "R",
+        "Version": "3.4.3",
+        "Release_Date": "2017-11-30",
+        "URL": "https://cran.rstudio.com/src/base/R-3/R-3.4.3.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/R-3.4.3.tar.gz",
+        "Comments": "Remember to set the RDIR, RHOME, R_HOME environment variables in the script you use this with.",
+        "Build_Commands": [
+            "tar xfz R-3.4.3.tar.gz",
+            "cd R-3.4.3/",
+            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "make",
+            "make install",
+            "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
+            "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "readline", "Version": "7.0"},
+            {"Software": "zlib", "Version": "1.2.11"},
+            {"Software": "xz", "Version": "5.2.3"},
+            {"Software": "bzip", "Version": "1.0.6"},
+            {"Software": "openssl", "Version": "1.1.0f"},
+            {"Software": "curl", "Version": "7.57.0"},
             {"Software": "pcre", "Version": "8.40"},
             {"Software": "libjpeg", "Version": "v9b"},
             {"Software": "lapack", "Version": "3.7.1"}
