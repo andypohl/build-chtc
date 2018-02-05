@@ -8,9 +8,14 @@ import os
 BUILD_LINES = """\
 #!/bin/bash
 
+LINUX_VER=$1
+if [ $LINUX_VER == "6" ]; then
+    export CC=gcc48
+fi
+
 # Set up environment:
-SOFTWAREDIR=$_CONDOR_SCRATCH_DIR/software
-if [ -z $_CONDOR_SCRATCH_DIR ]; then 
+SOFTWAREDIR=$TMPDIR/software
+if [ -z $TMPDIR ]; then 
     SOFTWAREDIR=$(pwd -P)/software
 fi
 export LD_LIBRARY_PATH=$SOFTWAREDIR/lib
@@ -33,7 +38,7 @@ rm -rf src/
 
 # tar it up
 cd ../
-tar cfz {{|PREFIX|}}.tar.gz software
+tar cfz {{|PREFIX|}}.${LINUX_VER}.tar.gz software
 rm -rf $SOFTWAREDIR"""
 
 class ScriptLine(object):

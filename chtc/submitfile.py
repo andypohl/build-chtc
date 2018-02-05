@@ -16,24 +16,24 @@ class SubmitFile(OrderedDict):
         self.prefix = prefix
         self.script_name = prefix + '.sh'
         self.filename = prefix + '.submit'
-        self.tarball = prefix + '.tar.gz'
+        self.tarball = prefix + '.$(linux).tar.gz'
         self['universe'] = 'vanilla'
         self['grid_resource'] = None
         self['remote_universe'] = None
         self['executable'] = self.script_name
-        self['arguments'] = None
-        self['log'] = prefix + '.log'
-        self['error'] = prefix + '.err'
-        self['output'] = prefix + '.out'
+        self['arguments'] = '$(linux)'
+        self['log'] = prefix + '.$(linux).log'
+        self['error'] = prefix + '.$(linux).err'
+        self['output'] = prefix + '.$(linux).out'
         self['transfer_input_files'] = None
         self['transfer_output_files'] = [self.tarball]
         self['should_transfer_files'] = 'yes'
         self['when_to_transfer_output'] = 'on_exit'
-        self['requirements'] = None
-        self['+IsBuildJob'] = None
+        self['requirements'] = '((OpSysMajorVer == $(linux)) && (IsBuildSlot == True))'
+        self['+IsBuildJob'] = 'True'
         self['request_disk'] = '5GB'
-        self['request_memory'] = '500MB'
-        self['queue'] = ''
+        self['request_memory'] = '2GB'
+        self['queue'] = 'queue linux in (6,7)'
         self._locked = True
         self.testing = False
 
@@ -47,7 +47,9 @@ class SubmitFile(OrderedDict):
                 if isinstance(value, list):
                     joiner = ' && ' if key == 'requirements' else ', '
                     value = joiner.join(value)
-                if len(value) > 0:
+                if key == 'queue' and len(value) > 0:
+                    line = value
+                elif len(value) > 0:
                     line = line + ' = ' + value
                 bigstring = bigstring + line + '\n'
         return bigstring.rstrip() + '\n'
