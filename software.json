@@ -171,9 +171,29 @@
         "Software": "libxml2",
         "Version": "2.9.4",
         "URL": "ftp://xmlsoft.org/libxml2/libxml2-2.9.4.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/libxml2-2.9.4.tar.gz",
         "Build_Commands": [
             "tar xfz libxml2-2.9.4.tar.gz",
             "cd libxml2-2.9.4/",
+            "./configure --prefix=$SOFTWAREDIR --without-python CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\"",
+            "make",
+            "make install",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"},
+            {"Software": "xz", "Version": "5.2.2"}
+        ]
+    },
+    {
+        "Software": "libxml2",
+        "Version": "2.9.7",
+        "Release_Date": "2017-11-02",
+        "URL": "ftp://xmlsoft.org/libxml2/libxml2-2.9.7.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/libxml2-2.9.7.tar.gz",
+        "Build_Commands": [
+            "tar xfz libxml2-2.9.7.tar.gz",
+            "cd libxml2-2.9.7/",
             "./configure --prefix=$SOFTWAREDIR --without-python CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\"",
             "make",
             "make install",
@@ -208,6 +228,26 @@
         "Build_Commands": [
             "tar xfz openssl-1.0.2h.tar.gz",
             "cd openssl-1.0.2h/",
+            "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
+            "make depend",
+            "make",
+            "make install_sw",
+            "cd ../"
+        ],
+        "Dependent_Software": [
+            {"Software": "zlib", "Version": "1.2.8"}
+        ]
+    },
+    {
+        "Software": "openssl",
+        "Version": "1.0.2k",
+        "Release_Date": "2017-01-26",
+        "URL": "https://www.openssl.org/source/old/1.0.2/openssl-1.0.2k.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/openssl-1.0.2k.tar.gz",
+        "Comments": "Makes a $SOFTWAREDIR/certs directory for a CA bundle",
+        "Build_Commands": [
+            "tar xfz openssl-1.0.2k.tar.gz",
+            "cd openssl-1.0.2k/",
             "./Configure linux-x86_64 --prefix=$SOFTWAREDIR --openssldir=$SOFTWAREDIR --with-zlib-include=$SOFTWAREDIR/include --with-zlib-lib=$SOFTWAREDIR/lib shared zlib-dynamic",
             "make depend",
             "make",
@@ -603,7 +643,7 @@
         "Build_Commands": [
             "tar xfz R-3.4.3.tar.gz",
             "cd R-3.4.3/",
-            "./configure CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "./configure PKG_CONFIG_PATH=\"$SOFTWAREDIR/lib/pkgconfig\" CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
             "make",
             "make install",
             "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
@@ -614,11 +654,13 @@
             {"Software": "readline", "Version": "7.0"},
             {"Software": "zlib", "Version": "1.2.11"},
             {"Software": "xz", "Version": "5.2.3"},
+            {"Software": "libxml2", "Version": "2.9.7"},
             {"Software": "bzip", "Version": "1.0.6"},
-            {"Software": "openssl", "Version": "1.1.0f"},
+            {"Software": "openssl", "Version": "1.0.2k"},
             {"Software": "curl", "Version": "7.57.0"},
             {"Software": "pcre", "Version": "8.40"},
             {"Software": "libjpeg", "Version": "v9b"},
+            {"Software": "libpng", "Version": "1.6.28"},
             {"Software": "lapack", "Version": "3.7.1"}
         ]
     }
