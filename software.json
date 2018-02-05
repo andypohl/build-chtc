@@ -649,7 +649,7 @@
         ]
     },
     {
-        "Software": "R",
+        "Software": "R-big",
         "Version": "3.4.3",
         "Release_Date": "2017-11-30",
         "URL": "https://cran.rstudio.com/src/base/R-3/R-3.4.3.tar.gz",
@@ -676,7 +676,11 @@
             "# RHOME is needed for Rscript",
             "export RHOME=$R_HOME",
             "export R_ENVIRON=$R_HOME/etc/Renviron",
-            "R -e \"install.packages('devtools', repos='https://cran.rstudio.com/')\""
+            "R -e \"install.packages('devtools', repos='https://cran.rstudio.com/')\"",
+            "wget https://cran.rstudio.com/src/contrib/udunits2_0.13.tar.gz",
+            "R CMD install --configure-args=\"--with-udunits2-lib=$SOFTWAREDIR/lib --with-udunits2-include=$SOFTWAREDIR/include\" udunits2_0.13.tar.gz",
+            "R -e \"install.packages(c('units','lubridate','tidyverse'), repos='https://cran.rstudio.com/')\"",
+            "R -e \"devtools::install_github('facebook/prophet', subdir='R', refs='master')\""
         ],
         "Dependent_Software": [
             {"Software": "readline", "Version": "7.0"},
