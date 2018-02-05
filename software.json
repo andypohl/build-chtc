@@ -678,7 +678,7 @@
             "export R_ENVIRON=$R_HOME/etc/Renviron",
             "R -e \"install.packages('devtools', repos='https://cran.rstudio.com/')\"",
             "wget https://cran.rstudio.com/src/contrib/udunits2_0.13.tar.gz",
-            "R CMD install --configure-args=\"--with-udunits2-lib=$SOFTWAREDIR/lib --with-udunits2-include=$SOFTWAREDIR/include\" udunits2_0.13.tar.gz",
+            "R CMD INSTALL --configure-args=\"--with-udunits2-lib=$SOFTWAREDIR/lib --with-udunits2-include=$SOFTWAREDIR/include\" udunits2_0.13.tar.gz",
             "R -e \"install.packages(c('units','lubridate','tidyverse'), repos='https://cran.rstudio.com/')\"",
             "R -e \"devtools::install_github('facebook/prophet', subdir='R', refs='master')\""
         ],
