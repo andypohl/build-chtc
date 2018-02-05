@@ -471,6 +471,21 @@
         ]        
     },
     {
+        "Software": "udunits2",
+        "Version": "2.2.25",
+        "Release_Date": "2017-05-19",
+        "URL": "ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-2.2.25.tar.gz",
+        "URL_local": "http://proxy.chtc.wisc.edu/aapohl/tarballs/udunits-2.2.25.tar.gz",
+        "Build_Commands": [
+            "tar xfz udunits-2.2.25.tar.gz",
+            "cd udunits-2.2.25/",
+            "./configure --prefix=$SOFTWAREDIR",
+            "make",
+            "make install",
+            "cd ../"
+        ]        
+    },
+    {
         "Software": "R",
         "Version": "3.3.3",
         "Release_Date": "2017-03-06",
@@ -643,18 +658,32 @@
         "Build_Commands": [
             "tar xfz R-3.4.3.tar.gz",
             "cd R-3.4.3/",
-            "./configure PKG_CONFIG_PATH=\"$SOFTWAREDIR/lib/pkgconfig\" CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --enable-R-profiling --enable-R-shlib --enable-memory-profiling",
+            "./configure PKG_CONFIG_PATH=\"$SOFTWAREDIR/lib/pkgconfig\" CFLAGS=\"-I$SOFTWAREDIR/include\" CPPFLAGS=\"-I$SOFTWAREDIR/include\" LDFLAGS=\"-L$SOFTWAREDIR/lib\" --prefix=$SOFTWAREDIR --without-x --without-cairo --with-jpeglib --with-readline --with-blas --with-lapack --with-udunits2 --enable-R-profiling --enable-R-shlib --enable-memory-profiling --disable-rpath",
             "make",
+            "cp doc/NEWS doc/NEWS.pdf",
             "make install",
             "# Below is that tricky line get rid of temporary directories from the built R executables, etc",
             "base=$(basename $SOFTWAREDIR) && sed -i 's/\\/var\\/lib\\/condor.*'$base'\\//${RDIR}\\//' $SOFTWAREDIR/bin/R $SOFTWAREDIR/lib64/R/bin/R $SOFTWAREDIR/lib64/R/etc/Makeconf",
-            "cd ../"
+            "cd ../",
+            "wget https://cran.rstudio.com/src/contrib/udunits2_0.13.tar.gz",
+            "export BUILDDIR=$SOFTWAREDIR",
+            "export PKG_CONFIG_PATH=$BUILDDIR/lib/pkgconfig",
+            "export LD_LIBRARY_PATH=$BUILDDIR/lib:$BUILDDIR/lib64/R/lib",
+            "# RDIR was substituted into R and Rscript executables already",
+            "export RDIR=$BUILDDIR",
+            "# R_HOME is needed for R executable",
+            "export R_HOME=$RDIR/lib64/R",
+            "# RHOME is needed for Rscript",
+            "export RHOME=$R_HOME",
+            "export R_ENVIRON=$R_HOME/etc/Renviron",
+            "R -e \"install.packages('devtools', repos='https://cran.rstudio.com/')\""
         ],
         "Dependent_Software": [
             {"Software": "readline", "Version": "7.0"},
             {"Software": "zlib", "Version": "1.2.11"},
             {"Software": "xz", "Version": "5.2.3"},
             {"Software": "libxml2", "Version": "2.9.7"},
+            {"Software": "udunits2", "Version": "2.2.25"},
             {"Software": "bzip", "Version": "1.0.6"},
             {"Software": "openssl", "Version": "1.0.2k"},
             {"Software": "curl", "Version": "7.57.0"},
